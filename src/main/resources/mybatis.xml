@@ -2,22 +2,21 @@
 <!DOCTYPE configuration
         PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
-
 <configuration>
-    <properties resource="jdbc_conf.properties"/>
+    <properties resource="jdbcConf.properties"/>
 
-    <environments default="mysql">
-        <environment id="mysql">
+    <environments default="development">
+        <environment id="development">
             <transactionManager type="JDBC"/>
             <dataSource type="POOLED">
                 <property name="driver" value="${jdbc.mysql.driver}"/>
                 <property name="url" value="${jdbc.mysql.url}"/>
-                <property name="username" value="${jdbc.mysql.username>"/>
-                <property name="password" value="${jdbc.mysql.password>"/>
+                <property name="username" value="${jdbc.mysql.username}"/>
+                <property name="password" value="${jdbc.mysql.password}"/>
             </dataSource>
         </environment>
     </environments>
     <mappers>
-
+        <mapper resource="com/liuuki/crm/settings/dao/UserDao.xml"/>
     </mappers>
 </configuration>
