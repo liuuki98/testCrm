@@ -2,7 +2,6 @@
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
-
 %>
 <!DOCTYPE html>
 <html>
@@ -50,7 +49,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				success:function (data) {
 					if(data.success){
 						$("#msg").html("ok");
-						window.location.href="workbench/index.html";
+						window.location.href="workbench/index.jsp";
 					}else{
 						$("#msg").html(data.msg);
 					}
