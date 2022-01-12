@@ -15,6 +15,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 	<script>
 		$(function () {
+			//login.jsp始终在顶层窗口显示
+			if(window.top!=window){
+				window.top.location=window.location;
+			}
+
 			$("#username").focus();
 			$("#username").val("");
 

@@ -1,20 +1,90 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
+<%
+String basePath = request.getScheme() +"://" + request.getServerName() + ":" +request.getServerPort() + request.getContextPath()+"/";
+%>
 <!DOCTYPE html>
 <html>
 <head>
+	<base href="<%=basePath%>"/>
 <meta charset="UTF-8">
 
-<link href="../../jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
-<link href="../../jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" />
+<link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+<link href="jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" />
 
-<script type="text/javascript" src="../../jquery/jquery-1.11.1-min.js"></script>
-<script type="text/javascript" src="../../jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="../../jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
-<script type="text/javascript" src="../../jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
+<script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
+<script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
+<script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
 
 <script type="text/javascript">
 
 	$(function(){
-		
+
+		//添加日历插件
+		$(".time").datetimepicker({
+			language:  "zh-CN",
+			format: "yyyy-mm-dd",//显示格式
+			minView: 2,//设置只显示到月份
+			initialDate: new Date(),//初始化当前日期
+			weekStart:1,
+			autoclose: true,//选中自动关闭
+			todayBtn: true, //显示今日按钮
+			clearBtn : true,
+			pickerPosition: "bottom-left"
+		});
+		//点击创建动态窗口
+		$("#addActivityBtn").click(function () {
+
+			$.ajax({
+				url:"workbench/activity/getUserList.do",
+
+				dataType:"json",
+				type:"get",
+				success:function (data) {
+					$.each(data,function (index,item) {
+						$("#create-marketActivityOwner").append("<option value='"+item.id+"'>"+item.name+"</option>")
+					})
+					$("#create-marketActivityOwner").val("${sessionScope.user.id}");
+
+					$("#activityAddFrom")[0].reset();
+					$("#createActivityModal").modal("show");
+				}
+
+
+			})
+
+		})
+
+		//添加市场活动
+		$("#save-activityBtn").click(function () {
+
+
+
+			$.ajax({
+				url:"workbench/activity/saveActivity.do",
+				data:{
+					"owner":$("#create-marketActivityOwner").val().trim(),
+					"name":$("#create-marketActivityName").val().trim(),
+					"startDate":$("#create-startTime").val().trim(),
+					"endDate":$("#create-endTime").val().trim(),
+					"cost":$("#create-cost").val().trim(),
+					"description":$("#create-describe").val().trim(),
+
+				},
+				type:"post",
+				dataType:"json",
+				success:function (data) {
+
+					$("#activityAddFrom")[0].reset();
+					var flag=data.success;
+					if (flag=true){
+						$("#createActivityModal").modal("hide");
+					}else {
+						alert("添加失败，请检查是否符合规范！")
+					}
+				}
+			})
+		})
 		
 		
 	});
@@ -35,15 +105,13 @@
 				</div>
 				<div class="modal-body">
 				
-					<form class="form-horizontal" role="form">
+					<form class="form-horizontal" id="activityAddFrom" role="form">
 					
 						<div class="form-group">
 							<label for="create-marketActivityOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="create-marketActivityOwner">
-								  <option>zhangsan</option>
-								  <option>lisi</option>
-								  <option>wangwu</option>
+
 								</select>
 							</div>
                             <label for="create-marketActivityName" class="col-sm-2 control-label">名称<span style="font-size: 15px; color: red;">*</span></label>
@@ -53,13 +121,13 @@
 						</div>
 						
 						<div class="form-group">
-							<label for="create-startTime" class="col-sm-2 control-label">开始日期</label>
+							<label for="create-startTime" class="col-sm-2 control-label " >开始日期</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="create-startTime">
+								<input type="text" class="form-control time" id="create-startTime">
 							</div>
-							<label for="create-endTime" class="col-sm-2 control-label">结束日期</label>
+							<label for="create-endTime" class="col-sm-2 control-label ">结束日期</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="create-endTime">
+								<input type="text" class="form-control time" id="create-endTime">
 							</div>
 						</div>
                         <div class="form-group">
@@ -81,7 +149,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal">保存</button>
+					<button type="button" class="btn btn-primary" id="save-activityBtn">保存</button>
 				</div>
 			</div>
 		</div>
@@ -202,7 +270,7 @@
 			</div>
 			<div class="btn-toolbar" role="toolbar" style="background-color: #F7F7F7; height: 50px; position: relative;top: 5px;">
 				<div class="btn-group" style="position: relative; top: 18%;">
-				  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createActivityModal"><span class="glyphicon glyphicon-plus"></span> 创建</button>
+				  <button type="button" class="btn btn-primary" id="addActivityBtn" ><span class="glyphicon glyphicon-plus"></span> 创建</button>
 				  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editActivityModal"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
 				  <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
 				</div>

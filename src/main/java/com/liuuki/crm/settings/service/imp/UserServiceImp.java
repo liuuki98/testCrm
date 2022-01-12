@@ -29,7 +29,7 @@ public class UserServiceImp implements UserService  {
         map.put("password",password);
 
         User user = userDao.login(map);
-        System.out.println("获取到user"+ip+"\t"+user.getAllowIps().toString());
+
         if(user==null){
 
             System.out.println("user为空");

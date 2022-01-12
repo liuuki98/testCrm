@@ -17,6 +17,16 @@
     <filter-name>encodingFilter</filter-name>
     <url-pattern>*.do</url-pattern>
   </filter-mapping>
+
+  <filter>
+    <filter-name>IsLoginnedFilter</filter-name>
+    <filter-class>com.liuuki.crm.webFilter.IsLoginnedFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>IsLoginnedFilter</filter-name>
+    <url-pattern>*.do</url-pattern>
+    <url-pattern>*.jsp</url-pattern>
+  </filter-mapping>
   
   <servlet>
     <servlet-name>UserController</servlet-name>
@@ -25,6 +35,16 @@
   <servlet-mapping>
     <servlet-name>UserController</servlet-name>
     <url-pattern>/settings/user/login.do</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>ActivityController</servlet-name>
+    <servlet-class>com.liuuki.crm.workbench.web.controller.ActivityController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ActivityController</servlet-name>
+    <url-pattern>/workbench/activity/getUserList.do</url-pattern>
+    <url-pattern>/workbench/activity/saveActivity.do</url-pattern>
   </servlet-mapping>
   
   

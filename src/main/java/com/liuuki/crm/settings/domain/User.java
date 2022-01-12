@@ -8,19 +8,19 @@ package com.liuuki.crm.settings.domain;
  * @Version 1.0
  **/
 public class User {
-    private String id;
-    private String loginAct;
-    private String name;
-    private String loginPwd;
-    private String email;
-    private String expireTime;
-    private String lockState;
-    private String deptno;
-    private String allowIps;
-    private String createTime;
-    private String createBy;
-    private String editTime;
-    private String editBy;
+    private String id;  //主键
+    private String loginAct;    //登陆账号
+    private String name;    //姓名
+    private String loginPwd;    //登陆密码
+    private String email;   //电子邮箱
+    private String expireTime;  //账号有效日期
+    private String lockState;   //是否冻结 0冻结，1未冻结
+    private String deptno;  //部门编号（对应部门表主键）
+    private String allowIps;    //允许登录的IP地址
+    private String createTime;  //该信息创建的时间
+    private String createBy;    //创建人
+    private String editTime;    //修改时间
+    private String editBy;  //修改人
 
     public User(){}
 

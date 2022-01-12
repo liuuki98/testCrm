@@ -5,6 +5,8 @@
 <configuration>
     <properties resource="jdbcConf.properties"/>
 
+
+
     <environments default="development">
         <environment id="development">
             <transactionManager type="JDBC"/>
@@ -18,5 +20,6 @@
     </environments>
     <mappers>
         <mapper resource="com/liuuki/crm/settings/dao/UserDao.xml"/>
+        <mapper resource="com/liuuki/crm/workbench/dao/ActivityDao.xml"/>
     </mappers>
 </configuration>
