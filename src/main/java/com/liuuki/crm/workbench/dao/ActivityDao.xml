@@ -12,5 +12,78 @@
         values (#{id},#{owner},#{name},#{startDate},#{endDate},#{cost},#{description},#{createTime},#{createBy})
     </insert>
 
+    <select id="selectActivity" resultType="com.liuuki.crm.workbench.domain.Activity">
+        select
+            a.id,
+            a.name,
+            u.name as owner,
+            a.startDate,
+            a.endDate
+        from tbl_activity as a
+        join tbl_user as u
+        on a.owner=u.id
+        <where>
+            <if test="selectName!=null and selectName!=''">
+                a.name like '%' #{selectName} '%'
+            </if>
+            <if test="selectOwner!=null and selectOwner!=''">
+                and u.name like '%' #{selectOwner} '%'
+            </if>
+            <if test="selectStartTime!=null and selectStartTime!=''">
+                and a.startDate &gt; #{selectStartTime}
+            </if>
+            <if test="selectEndTime!=null and selectEndTime!=''">
+                and a.endDate &lt; {selectEndTime}
+            </if>
+        </where>
+        order by a.createTime desc
+        limit #{pageStart},#{pageEnd}
+
+    </select>
+
+    <select id="getTotalPages" resultType="int">
+        select count(*) from tbl_activity as a join tbl_user as u on a.owner=u.id
+        <where>
+            <if test="selectName!=null and selectName!=''">
+                a.name like '%' #{selectName} '%'
+            </if>
+            <if test="selectOwner!=null and selectOwner!=''">
+                and u.name like '%' #{selectOwner} '%'
+            </if>
+            <if test="selectStartTime!=null and selectStartTime!=''">
+                and a.startDate &gt; #{selectStartTime}
+            </if>
+            <if test="selectEndTime!=null and selectEndTime!=''">
+                and a.endDate &lt; {selectEndTime}
+            </if>
+        </where>
+    </select>
+
+    <delete id="deleteActivity">
+        delete from tbl_activity
+        where id in
+        <foreach collection="array" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="selectActivityById" resultType="com.liuuki.crm.workbench.domain.Activity">
+        select * from tbl_activity where id=#{id}
+    </select>
+
+    <update id="updateActivity">
+        update tbl_activity set
+        owner=#{owner},
+        name=#{name},
+        startDate=#{startDate},
+        endDate=#{endDate},
+        cost=#{cost},
+        description=#{description},
+        editTime=#{editTime},
+        editBy=#{editBy}
+        where id=#{id}
+    </update>
+
+
 
 </mapper>

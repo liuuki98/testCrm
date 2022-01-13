@@ -5,10 +5,10 @@ import com.liuuki.crm.util.DateTimeUtil;
 import com.liuuki.crm.util.PrintJson;
 import com.liuuki.crm.util.ServiceFactory;
 import com.liuuki.crm.util.UUIDUtil;
+import com.liuuki.crm.vo.ActivityVo;
 import com.liuuki.crm.workbench.domain.Activity;
 import com.liuuki.crm.workbench.service.ActivityService;
 import com.liuuki.crm.workbench.service.imp.ActivityServiceImp;
-import org.apache.ibatis.session.SqlSession;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -28,16 +28,31 @@ import java.util.Map;
  **/
 public class ActivityController extends HttpServlet {
     private ActivityService activityService = (ActivityService) ServiceFactory.getService(new ActivityServiceImp());
+
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+
         String path = request.getServletPath();
+        System.out.println("进入到可控制器"+ path);
         if("/workbench/activity/getUserList.do".equals(path)){
             userList(request,response);
         }
 
         if("/workbench/activity/saveActivity.do".equals(path)){
             saveActivity(request,response);
+        }
+        if("/workbench/activity/selectActivity.do".equals(path)){
+            selectActivity(request,response);
+        }
+        if("/workbench/activity/deleteActivity.do".equals(path)){
+            deleteActivity(request,response);
+        }
+        if("/workbench/activity/getUserAndActivity.do".equals(path)){
+            selectActivityById(request,response);
+        }
+        if("/workbench/activity/saveEditActivity.do".equals(path)){
+            saveEditActivity(request,response);
         }
     }
 
@@ -50,10 +65,7 @@ public class ActivityController extends HttpServlet {
 
        List<User> usersList= activityService.userList();
         PrintJson.printJsonObj(response,usersList);
-        System.out.println("已发送");
-        for(User user :usersList){
-            System.out.println(user.getName());
-        }
+
     }
 
     /**
@@ -79,12 +91,84 @@ public class ActivityController extends HttpServlet {
             boolean flag=activityService.saveActivity(activity);
             PrintJson.printJsonFlag(response,flag);
         }catch (Exception e){
-            System.out.println("该方法之星");
             e.printStackTrace();
             PrintJson.printJsonFlag(response,false);
         }
 
 
     }
+
+    public void selectActivity(HttpServletRequest request,HttpServletResponse response){
+        String pageNum=request.getParameter("pageNum");
+        String pageSize=request.getParameter("pageSize");
+        String selectName=request.getParameter("selectName");
+        String selectOwner=request.getParameter("selectOwner");
+        String selectStartTime=request.getParameter("selectStartTime");
+        String selectEndTime=request.getParameter("selectEndTime");
+
+       int pageStart=(Integer.parseInt(pageNum)-1)*(Integer.parseInt(pageSize));
+       int pageEnd=Integer.parseInt(pageSize);
+
+       Map<String,Object> map = new HashMap<>();
+       map.put("pageStart",pageStart);
+        map.put("pageEnd",pageEnd);
+        map.put("selectName",selectName);
+        map.put("selectOwner",selectOwner);
+        map.put("selectStartTime",selectStartTime);
+        map.put("selectEndTime",selectEndTime);
+
+        ActivityVo<Activity> activityVo=activityService.selectActivity(map);
+        PrintJson.printJsonObj(response,activityVo);
+
+    }
+
+    /**
+     * 对市场活动进行删除操作
+     */
+    public void deleteActivity(HttpServletRequest request,HttpServletResponse response){
+        System.out.println("进入到删除市场活动的控制器");
+        String[] ids = request.getParameterValues("id");
+        boolean flag =activityService.deleteActivityRemark(ids);
+
+        PrintJson.printJsonFlag(response,flag);
+    }
+
+    public void selectActivityById(HttpServletRequest request,HttpServletResponse response){
+        String id=request.getParameter("id");
+        List<User> userList=activityService.userList();
+        Activity activity=activityService.selectActivityById(id);
+        System.out.println(userList.size());
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("userList",userList);
+        map.put("activity",activity);
+        PrintJson.printJsonObj(response,map);
+
+
+    }
+
+    public void saveEditActivity(HttpServletRequest request,HttpServletResponse response){
+
+        String id=request.getParameter("id");
+        String owner=request.getParameter("owner");
+        String name=request.getParameter("name");
+        String startDate=request.getParameter("startDate");
+        String endDate=request.getParameter("endDate");
+        String cost=request.getParameter("cost");
+        String description=request.getParameter("description");
+        String editTime=((User)request.getSession().getAttribute("user")).getName();
+        String editBy=DateTimeUtil.getSysTime();
+        Activity activity = new Activity(id,owner,name,startDate,endDate,cost,description,null,null,editTime,editBy);
+        boolean flag=activityService.updateActivity(activity);
+        if(flag){
+            PrintJson.printJsonFlag(response,true);
+        }else {
+            PrintJson.printJsonFlag(response,false);
+        }
+
+
+
+    }
+
 
 }
