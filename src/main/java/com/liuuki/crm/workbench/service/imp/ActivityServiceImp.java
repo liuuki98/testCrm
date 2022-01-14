@@ -7,6 +7,7 @@ import com.liuuki.crm.vo.ActivityVo;
 import com.liuuki.crm.workbench.dao.ActivityDao;
 import com.liuuki.crm.workbench.dao.ActivityRemarkDao;
 import com.liuuki.crm.workbench.domain.Activity;
+import com.liuuki.crm.workbench.domain.Remark;
 import com.liuuki.crm.workbench.service.ActivityService;
 
 import java.util.List;
@@ -117,5 +118,59 @@ public class ActivityServiceImp implements ActivityService {
             flag=false;
         }
         return flag;
+    }
+
+    /**
+     * 获取activity中的信息以及对应的user的name
+     * @param id
+     * @return
+     */
+    @Override
+    public Activity selectActivityByAId(String id) {
+        ActivityDao activityDao = SqlSessionUtil.getSqlSession().getMapper(ActivityDao.class);
+        Activity activity=activityDao.selectActivityByAId(id);
+        return activity;
+    }
+
+    /**
+     * 获取备注信息列表，返回给前端用于备注的初始化
+     * @param id
+     * @return
+     */
+    @Override
+    public List<Remark> getRemarkList(String id) {
+        ActivityRemarkDao activityRemarkDao = SqlSessionUtil.getSqlSession().getMapper(ActivityRemarkDao.class);
+        List<Remark> remarkList = activityRemarkDao.getRemarkList(id);
+        return remarkList;
+    }
+
+    /**
+     * 根据id删除备注
+     * @param id
+     * @return
+     */
+    @Override
+    public boolean deleteRemarkById(String id) {
+        boolean flag = true;
+        ActivityRemarkDao activityRemarkDao = SqlSessionUtil.getSqlSession().getMapper(ActivityRemarkDao.class);
+        int i = activityRemarkDao.deleteRemarkById(id);
+        if(i!=1){
+            flag=false;
+        }
+        return flag;
+    }
+
+    /**
+     * //获取单个备注的内容
+     * @param id
+     * @return
+     */
+    @Override
+    public String getRemarkNoteContent(String id) {
+        boolean flag = true;
+        ActivityRemarkDao activityRemarkDao = SqlSessionUtil.getSqlSession().getMapper(ActivityRemarkDao.class);
+        String note = activityRemarkDao.getRemarkNoteContent(id);
+
+        return note;
     }
 }

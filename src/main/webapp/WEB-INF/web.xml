@@ -49,6 +49,10 @@
     <url-pattern>/workbench/activity/deleteActivity.do</url-pattern>
     <url-pattern>/workbench/activity/getUserAndActivity.do</url-pattern>
     <url-pattern>/workbench/activity/saveEditActivity.do</url-pattern>
+    <url-pattern>/workbench/activity/detail.do</url-pattern>
+    <url-pattern>/workbench/activity/getRemarkList.do</url-pattern>
+    <url-pattern>/workbench/activity/deleteRemarkById.do</url-pattern>
+    <url-pattern>/workbench/activity/getRemarkNoteContent.do</url-pattern>
 
   </servlet-mapping>
   

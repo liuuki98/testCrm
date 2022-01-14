@@ -84,6 +84,25 @@
         where id=#{id}
     </update>
 
+    <select id="selectActivityByAId" resultType="com.liuuki.crm.workbench.domain.Activity">
+        select
+        a.id,
+        u.name as owner,
+        a.name,
+        a.startDate,
+        a.endDate,
+        a.cost,
+        a.description,
+        a.createTime,
+        a.createBy,
+        a.editTime,
+        a.editBy
+        from tbl_activity as a
+        join tbl_user as u
+        on a.owner=u.id
+        where a.id=#{id}
+    </select>
+
 
 
 </mapper>

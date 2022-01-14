@@ -5,7 +5,7 @@
 <mapper namespace="com.liuuki.crm.workbench.dao.ActivityRemarkDao">
     <select id="selectAllRemarkById" resultType="int">
         select count(*) from tbl_activity_remark
-        where activityID in
+        where activityId in
         <foreach collection="array" open="(" close=")" item="item" separator=",">
             #{item}
         </foreach>
@@ -18,5 +18,28 @@
             #{item}
         </foreach>
     </delete>
+
+    <select id="getRemarkList" resultType="com.liuuki.crm.workbench.domain.Remark">
+        select
+        id,
+        noteContent,
+        createTime,
+        createBy,
+        editTime,
+        editBy,
+        editFlag,
+        activityId
+        from tbl_activity_remark
+        where activityId =#{id}
+
+    </select>
+
+    <delete id="deleteRemarkById">
+        delete from tbl_activity_remark where id=#{id}
+    </delete>
+
+    <select id="getRemarkNoteContent" resultType="java.lang.String">
+        select noteContent from tbl_activity_remark where id=#{id}
+    </select>
 
 </mapper>

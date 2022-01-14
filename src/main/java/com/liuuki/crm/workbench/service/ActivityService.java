@@ -4,6 +4,7 @@ import com.liuuki.crm.Exception.AddActivityException;
 import com.liuuki.crm.settings.domain.User;
 import com.liuuki.crm.vo.ActivityVo;
 import com.liuuki.crm.workbench.domain.Activity;
+import com.liuuki.crm.workbench.domain.Remark;
 
 import java.util.List;
 import java.util.Map;
@@ -21,4 +22,12 @@ public interface ActivityService {
     Activity selectActivityById(String id);
 
     boolean updateActivity(Activity activity);
+    //获取activity中的信息以及对应的user的name
+    Activity selectActivityByAId(String id);
+    //获取备注信息列表，返回给前端用于备注的初始化
+    List<Remark> getRemarkList(String id);
+    //根据备注ID删除该备注
+    boolean deleteRemarkById(String id);
+   ////获取单个备注的内容
+    String getRemarkNoteContent(String id);
 }

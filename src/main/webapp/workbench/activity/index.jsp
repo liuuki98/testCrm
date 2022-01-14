@@ -131,13 +131,14 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 					$.each(data.datalist,function (index,item) {
 						html+='<tr class="active">';
 						html+='<td><input type="checkbox" name="xzBtn" value="'+item.id+'"/></td>';
-						html+='<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href=\'workbench/activity/detail.jsp\';">'+item.name+'</a></td>';
+						html+='<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href=\'workbench/activity/detail.do?id='+item.id+'\';">'+item.name+'</a></td>';
 						html+='<td>'+item.owner+'</td>';
 						html+='<td>'+item.startDate+'</td>';
 						html+='<td>'+item.endDate+'</td>';
 						html+='</tr>';
 
 					});
+
 					var totalPages=data.pagesTotal%pageSize==0?data.pagesTotal/pageSize:parseInt(data.pagesTotal/pageSize)+1;
 					$("#selectDisplay").html(html);
 					//分页插件
@@ -260,7 +261,7 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 				data:{
 					"id":$("#edit-id").val().trim(),
 					"name":$("#edit-marketActivityName").val().trim(),
-					"StartDate":$("#edit-startTime").val().trim(),
+					"startDate":$("#edit-startTime").val().trim(),
 					"endDate":$("#edit-endTime").val().trim(),
 					"cost":$("#edit-cost").val().trim(),
 					"description":$("#edit-describe").val().trim(),
@@ -286,6 +287,8 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 	});
 
 </script>
+
+
 </head>
 <body>
 	<div id="hideVal" style="display: none">

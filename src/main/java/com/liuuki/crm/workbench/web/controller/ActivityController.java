@@ -7,6 +7,7 @@ import com.liuuki.crm.util.ServiceFactory;
 import com.liuuki.crm.util.UUIDUtil;
 import com.liuuki.crm.vo.ActivityVo;
 import com.liuuki.crm.workbench.domain.Activity;
+import com.liuuki.crm.workbench.domain.Remark;
 import com.liuuki.crm.workbench.service.ActivityService;
 import com.liuuki.crm.workbench.service.imp.ActivityServiceImp;
 
@@ -53,6 +54,22 @@ public class ActivityController extends HttpServlet {
         }
         if("/workbench/activity/saveEditActivity.do".equals(path)){
             saveEditActivity(request,response);
+        }
+        //初始化detail界面，返回一个activity用于初始化界面
+        if("/workbench/activity/detail.do".equals(path)){
+            openDetail(request,response);
+        }
+        //获取备注信息列表，返回给前端用于备注的初始化
+        if("/workbench/activity/getRemarkList.do".equals(path)){
+            getRemarkList(request,response);
+        }
+        //根据备注ID删除该备注
+        if("/workbench/activity/deleteRemarkById.do".equals(path)){
+            deleteRemarkById(request,response);
+        }
+        //获取单个备注的内容
+        if("/workbench/activity/getRemarkNoteContent.do".equals(path)){
+            getRemarkNoteContent(request,response);
         }
     }
 
@@ -168,6 +185,46 @@ public class ActivityController extends HttpServlet {
 
 
 
+    }
+
+    /**
+     * 初始化detail界面，返回一个activity用于初始化界面
+     * @param request
+     * @param response
+     */
+    public void openDetail(HttpServletRequest request,HttpServletResponse response) throws ServletException, IOException {
+        String id=request.getParameter("id");
+        Activity activity = activityService.selectActivityByAId(id);
+        request.setAttribute("activity",activity);
+        request.getRequestDispatcher("/workbench/activity/detail.jsp").forward(request,response);
+    }
+
+    /**获取备注信息列表，返回给前端用于备注的初始化
+     *
+     * @param request
+     * @param response
+     */
+    public void getRemarkList(HttpServletRequest request,HttpServletResponse response){
+        String id =request.getParameter("id");
+        List<Remark> remarkList=activityService.getRemarkList(id);
+        PrintJson.printJsonObj(response,remarkList);
+    }
+
+    /**
+     * 根据备注ID删除该备注
+     */
+    public void deleteRemarkById(HttpServletRequest request,HttpServletResponse response){
+        String id = request.getParameter("id");
+        boolean flag = activityService.deleteRemarkById(id);
+        PrintJson.printJsonFlag(response,flag);
+    }
+    //获取单个备注的内容
+    public void getRemarkNoteContent(HttpServletRequest request,HttpServletResponse response){
+        String id=request.getParameter("id");
+        String note= activityService.getRemarkNoteContent(id);
+        Map<String,String> map=new HashMap<>();
+        map.put("noteContent",note);
+        PrintJson.printJsonObj(response,map);
     }
 
 
