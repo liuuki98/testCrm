@@ -3,6 +3,7 @@ package com.liuuki.crm.workbench.dao;
 import com.liuuki.crm.workbench.domain.Remark;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ActivityRemarkDao {
 
@@ -15,4 +16,8 @@ public interface ActivityRemarkDao {
     int deleteRemarkById(String id);
 
     String getRemarkNoteContent(String id);
+
+    int saveRemark(Map<String, String> map);
+
+    int addRemark(Map<String, String> map);
 }

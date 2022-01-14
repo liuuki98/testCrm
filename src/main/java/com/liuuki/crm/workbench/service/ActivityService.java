@@ -30,4 +30,10 @@ public interface ActivityService {
     boolean deleteRemarkById(String id);
    ////获取单个备注的内容
     String getRemarkNoteContent(String id);
+
+    boolean saveRemark(Map<String, String> map);
+
+    boolean addRemark(Map<String, String> map);
+
+    boolean deleteSActivity(String id);
 }

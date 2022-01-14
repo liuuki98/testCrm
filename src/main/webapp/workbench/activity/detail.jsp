@@ -9,15 +9,34 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 	<meta charset="UTF-8">
 
 	<link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+	<link href="jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" />
+
+
 	<script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
 	<script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
+	<script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
 
 <script type="text/javascript">
 
-	//默认情况下取消和保存按钮是隐藏的
+
 	var cancelAndSaveBtnDefault = true;
 	
 	$(function(){
+		//添加日历插件
+		$(".time").datetimepicker({
+			language:  "zh-CN",
+			format: "yyyy-mm-dd",//显示格式
+			minView: 2,//设置只显示到月份
+			initialDate: new Date(),//初始化当前日期
+			weekStart:1,
+			autoclose: true,//选中自动关闭
+			todayBtn: true, //显示今日按钮
+			clearBtn : true,
+			pickerPosition: "bottom-left"
+		});
+
+		//默认情况下取消和保存按钮是隐藏的
 
 		$("#remark").focus(function(){
 			if(cancelAndSaveBtnDefault){
@@ -60,7 +79,7 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 		})
 		$("#remarkBody1").on("mouseout",".remarkDiv",function(){
 			$(this).children("div").children("div").hide();
-		})
+		});
 
 
 		//
@@ -124,7 +143,80 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 			})
 		});
 
-		//删除备注信息
+		//关闭备注按钮
+		$("#closeRemarkModol").click(function () {
+			$("#editRemarkModal").modal("hide");
+		})
+
+		//更新备注
+		$("#updateRemarkBtn").click(function () {
+
+			$.ajax({
+				url:"workbench/activity/saveRemark.do",
+				data:{
+					"id":$("#hideId").val(),
+					"noteContent":$("#noteContent").val(),
+				},
+				type:"post",
+				dataType:"json",
+				success:function(data){
+					if(data.success){
+						$("#editRemarkModal").modal("hide");
+						initRemarkList();
+					}else {
+						alert("更新失败！")
+					}
+
+				}
+			})
+
+		});
+		//添加备注
+		$("#saveRemark").click(function () {
+			var content = $("#remark").val().trim();
+
+			$.ajax({
+				url:"workbench/activity/addRemark.do",
+				data:{
+					"content":content,
+					"id":"${activity.id}"
+
+				},
+				type:"post",
+				dataType:"json",
+				success:function(data){
+					if(data.success){
+						initRemarkList();
+					}else {
+						alert("添加失败!")
+					}
+				}
+
+			})
+		})
+
+		//删除按钮
+		$("#deleteAcBtn").click(function () {
+
+			if(confirm("确认删除该市场活动吗？")){
+				$.ajax({
+					url:"workbench/activity/deleteSActivity.do",
+					data:{
+						"id":"${activity.id}",
+					},
+					type:"post",
+					dataType:"json",
+					success:function (data) {
+						if(data.success){
+							window.location.href='workbench/activity/index.jsp';
+						}else {
+							alert("删除失败");
+						}
+					}
+				})
+			}
+
+		});
 
 
 
@@ -132,7 +224,9 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 
 	});
 	function initRemarkList() {
-		var id="${activity.id}"
+		var id="${activity.id}";
+
+
 		$.ajax({
 			url:"workbench/activity/getRemarkList.do",
 			data:{
@@ -144,7 +238,7 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 				var html="";
 				$.each(data,function (index,item) {
 					html+='<div class="remarkDiv" id="'+item.id+'" style="height: 60px;">';
-					html+='<img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;"> ';
+					html+='<img title="zhangsan" src="/image/user-thumbnail.png" style="width: 30px; height:30px;"> ';
 					html+='<div style="position: relative; top: -40px; left: 40px;" >';
 					html+='<h5>'+item.noteContent+'</h5>';
 					html+='<font color="gray">市场活动</font> <font color="gray">-</font> <b>${activity.name}</b> <small style="color: gray;"> '+(item.editFlag==0?item.createTime:item.editTime)+'由'+(item.editFlag==0?item.createBy:item.editBy)+'</small>';
@@ -185,6 +279,7 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 	}
 	//修改备注信息函数
 	function editRemark(id) {
+		$("#hideId").val(id);
 		$.ajax({
 			url:"workbench/activity/getRemarkNoteContent.do",
 			data:{
@@ -196,8 +291,6 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 
 					$("#noteContent").html(data.noteContent);
 					$("#editRemarkModal").modal("show");
-
-
 			}
 		})
 	}
@@ -207,6 +300,8 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 
 </head>
 <body>
+	<!-- 隐藏域，存储一些数据 -->
+	<input style="display: none" id="hideId">
 	
 	<!-- 修改市场活动备注的模态窗口 -->
 	<div class="modal fade" id="editRemarkModal" role="dialog">
@@ -231,7 +326,7 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="closeRemarkModol">关闭</button>
                     <button type="button" class="btn btn-primary" id="updateRemarkBtn">更新</button>
                 </div>
             </div>
@@ -268,11 +363,11 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
                         <div class="form-group">
                             <label for="edit-startTime" class="col-sm-2 control-label">开始日期</label>
                             <div class="col-sm-10" style="width: 300px;">
-                                <input type="text" class="form-control" id="edit-startTime" value="2020-10-10">
+                                <input type="text" class="form-control time" id="edit-startTime" value="2020-10-10">
                             </div>
                             <label for="edit-endTime" class="col-sm-2 control-label">结束日期</label>
                             <div class="col-sm-10" style="width: 300px;">
-                                <input type="text" class="form-control" id="edit-endTime" value="2020-10-20">
+                                <input type="text" class="form-control time" id="edit-endTime" value="2020-10-20">
                             </div>
                         </div>
 
@@ -370,44 +465,19 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 
 		<div id="remarkBody">
 
-			<div class="remarkDiv" style="height: 60px;">
-				<img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">
-				<div style="position: relative; top: -40px; left: 40px;" >
-					<h5>哎呦！</h5>
-					<font color="gray">市场活动</font> <font color="gray">-</font> <b>发传单</b> <small style="color: gray;"> 2017-01-22 10:10:10 由zhangsan</small>
-					<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
-						<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
-						&nbsp;&nbsp;&nbsp;&nbsp;
-						<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
-					</div>
-				</div>
-			</div>
 
-			<!-- 备注2 -->
-			<div class="remarkDiv" style="height: 60px;">
-				<img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">
-				<div style="position: relative; top: -40px; left: 40px;" >
-					<h5>呵呵！</h5>
-					<font color="gray">市场活动</font> <font color="gray">-</font> <b>发传单</b> <small style="color: gray;"> 2017-01-22 10:20:10 由zhangsan</small>
-					<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
-						<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
-						&nbsp;&nbsp;&nbsp;&nbsp;
-						<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
-					</div>
-				</div>
-			</div>
 
 		</div>
 		
-		<!-- 备注1 -->
+
 
 		
 		<div id="remarkDiv" style="background-color: #E6E6E6; width: 870px; height: 90px;">
 			<form role="form" style="position: relative;top: 10px; left: 10px;">
 				<textarea id="remark" class="form-control" style="width: 850px; resize : none;" rows="2"  placeholder="添加备注..."></textarea>
 				<p id="cancelAndSaveBtn" style="position: relative;left: 737px; top: 10px; display: none;">
-					<button id="cancelBtn" type="button" class="btn btn-default">取消</button>
-					<button type="button" class="btn btn-primary">保存</button>
+					<button id="cancelBtn" type="button" class="btn btn-default" id="cancleBtn">取消</button>
+					<button type="button" class="btn btn-primary" id="saveRemark">保存</button>
 				</p>
 			</form>
 		</div>

@@ -167,10 +167,44 @@ public class ActivityServiceImp implements ActivityService {
      */
     @Override
     public String getRemarkNoteContent(String id) {
-        boolean flag = true;
+
         ActivityRemarkDao activityRemarkDao = SqlSessionUtil.getSqlSession().getMapper(ActivityRemarkDao.class);
         String note = activityRemarkDao.getRemarkNoteContent(id);
 
         return note;
+    }
+
+    @Override
+    public boolean saveRemark(Map<String, String> map) {
+        boolean flag = true;
+        ActivityRemarkDao activityRemarkDao = SqlSessionUtil.getSqlSession().getMapper(ActivityRemarkDao.class);
+        int i = activityRemarkDao.saveRemark(map);
+        if(i!=1){
+            flag=false;
+        }
+        return flag;
+    }
+
+    @Override
+    public boolean addRemark(Map<String, String> map) {
+        boolean flag = true;
+        ActivityRemarkDao activityRemarkDao = SqlSessionUtil.getSqlSession().getMapper(ActivityRemarkDao.class);
+        int i = activityRemarkDao.addRemark(map);
+        if(i!=1){
+            flag=false;
+        }
+
+        return flag;
+    }
+
+    @Override
+    public boolean deleteSActivity(String id) {
+        boolean flag=true;
+        ActivityDao activityDao = SqlSessionUtil.getSqlSession().getMapper(ActivityDao.class);
+        int i = activityDao.deleteSActivity(id);
+        if(i!=1){
+            flag=false;
+        }
+        return flag;
     }
 }

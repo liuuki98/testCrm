@@ -71,7 +71,45 @@ public class ActivityController extends HttpServlet {
         if("/workbench/activity/getRemarkNoteContent.do".equals(path)){
             getRemarkNoteContent(request,response);
         }
+        if("/workbench/activity/saveRemark.do".equals(path)){
+            saveRemark(request,response);
+        }
+        if("/workbench/activity/addRemark.do".equals(path)){
+            addRemark(request,response);
+        }
+        if("/workbench/activity/deleteSActivity.do".equals(path)){
+            deleteSActivity(request,response);
+        }
     }
+
+    private void deleteSActivity(HttpServletRequest request, HttpServletResponse response) {
+        String id=request.getParameter("id");
+        boolean flag =activityService.deleteSActivity(id);
+        PrintJson.printJsonFlag(response,flag);
+    }
+
+    private void addRemark(HttpServletRequest request, HttpServletResponse response) {
+        String content=request.getParameter("content");
+        String id=UUIDUtil.getUUID();
+        String name=((User)request.getSession().getAttribute("user")).getName();
+        String editFlag="0";
+        String createDate=DateTimeUtil.getSysTime();
+        String activityId=request.getParameter("id");
+        Map<String,String> map = new HashMap<>();
+        map.put("content",content);
+        map.put("id",id);
+        map.put("name",name);
+        map.put("editFlag",editFlag);
+        map.put("createDate",createDate);
+        map.put("activityId",activityId);
+
+        boolean flag = activityService.addRemark(map);
+        System.out.println("---------------"+flag);
+        PrintJson.printJsonFlag(response,flag);
+
+
+    }
+
 
     /**
      * 查找数据库中的User信息并返回给前端workbench/activity/index.jsp
@@ -227,5 +265,24 @@ public class ActivityController extends HttpServlet {
         PrintJson.printJsonObj(response,map);
     }
 
+    private void saveRemark(HttpServletRequest request, HttpServletResponse response) {
+
+        String id=request.getParameter("id");
+        String noteContent=request.getParameter("noteContent");
+        String editTime=DateTimeUtil.getSysTime();
+        String editBy=((User)request.getSession().getAttribute("user")).getName();
+
+
+        Map<String,String> map = new HashMap<>();
+        map.put("id",id);
+        map.put("noteContent",noteContent);
+        map.put("editFlag","1");
+        map.put("editTime",editTime);
+        map.put("editBy",editBy);
+
+        boolean flag=activityService.saveRemark(map);
+        System.out.println(flag);
+        PrintJson.printJsonFlag(response,flag);
+    }
 
 }

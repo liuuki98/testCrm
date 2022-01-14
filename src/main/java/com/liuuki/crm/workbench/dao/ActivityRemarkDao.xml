@@ -31,6 +31,7 @@
         activityId
         from tbl_activity_remark
         where activityId =#{id}
+        order by createTime desc
 
     </select>
 
@@ -41,5 +42,22 @@
     <select id="getRemarkNoteContent" resultType="java.lang.String">
         select noteContent from tbl_activity_remark where id=#{id}
     </select>
+
+   <update id="saveRemark">
+       update tbl_activity_remark set
+       noteContent=#{noteContent},
+       editFlag=#{editFlag},
+       editTime=#{editTime},
+       editBy=#{editBy}
+       where id=#{id}
+
+   </update>
+
+    <insert id="addRemark">
+        insert into tbl_activity_remark(id,noteContent,editFlag,createBy,createTime,activityId)
+        values (#{id},#{content},#{editFlag},#{name},#{createDate},#{activityId})
+    </insert>
+
+
 
 </mapper>
