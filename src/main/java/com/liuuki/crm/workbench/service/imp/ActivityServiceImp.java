@@ -8,8 +8,15 @@ import com.liuuki.crm.workbench.dao.ActivityDao;
 import com.liuuki.crm.workbench.dao.ActivityRemarkDao;
 import com.liuuki.crm.workbench.domain.Activity;
 import com.liuuki.crm.workbench.domain.Remark;
+import com.liuuki.crm.workbench.domain.Tran;
 import com.liuuki.crm.workbench.service.ActivityService;
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -207,4 +214,40 @@ public class ActivityServiceImp implements ActivityService {
         }
         return flag;
     }
+    //查找activity，返回list
+    @Override
+    public List<Activity> showActivityList(String id) {
+        ActivityDao activityDao = SqlSessionUtil.getSqlSession().getMapper(ActivityDao.class);
+        List<Activity> activityList = activityDao.showActivityList(id);
+
+        return activityList;
+    }
+
+    @Override
+    public List<Activity> searchActivityByClue(Map<String, String> map) {
+        ActivityDao activityDao = SqlSessionUtil.getSqlSession().getMapper(ActivityDao.class);
+        List<Activity> activityList = activityDao.searchActivityByClue(map);
+        return activityList;
+    }
+
+    @Override
+    public List<Activity> searchActivityByName(String name) {
+        String path="mybatis.xml";
+        InputStream inputStream=null;
+        SqlSession session=null;
+
+        try {
+            inputStream= Resources.getResourceAsStream(path);
+            SqlSessionFactory factory = new SqlSessionFactoryBuilder().build(inputStream);
+             session=factory.openSession();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ActivityDao activityDao = session.getMapper(ActivityDao.class);
+
+       List<Activity> activityList= activityDao.searchActivityByName(name);
+        return activityList;
+    }
+
+
 }

@@ -42,10 +42,9 @@ public class UserController extends HttpServlet {
         //转换为加密的密码
         password = MD5Util.getMD5(password);
         String ip = request.getRemoteAddr();
-        System.out.println(ip);
         //使用代理类
         UserService us = (UserService) ServiceFactory.getService(new UserServiceImp());
-        System.out.println("1");
+
 
 
         try {

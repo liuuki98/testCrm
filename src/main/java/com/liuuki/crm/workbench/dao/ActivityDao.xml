@@ -107,6 +107,44 @@
         delete from tbl_activity where id=#{id}
     </delete>
 
+    <select id="showActivityList" resultType="com.liuuki.crm.workbench.domain.Activity">
+        select car.id,u.name as owner,a.startDate,a.endDate,a.name
+        from tbl_clue_activity_relation as car
+        join tbl_activity as a
+        on car.activityId=a.id
+        join tbl_user as u
+        on a.owner=u.id
+        where car.clueId=#{id}
+    </select>
 
+    <select id="searchActivityByClue" resultType="com.liuuki.crm.workbench.domain.Activity">
+        select
+            a.name,
+            a.startDate,
+            a.endDate,
+            u.name as owner,
+            a.id
+        from tbl_activity as a
+        join tbl_user as u
+        on a.owner=u.id
+        where a.name like '%' #{name} '%'
+        and a.id not in(
+            select activityId from tbl_clue_activity_relation where clueId=#{clueId}
+        )
+    </select>
+
+    <select id="searchActivityByName" resultType="com.liuuki.crm.workbench.domain.Activity">
+        select
+            a.name,
+            u.name as owner,
+            a.startDate,
+            a.endDate,
+            a.id
+        from tbl_activity as a
+        join tbl_user as u
+        on a.owner=u.id
+        where a.name like '%' #{name} '%'
+        order by a.createTime desc
+    </select>
 
 </mapper>

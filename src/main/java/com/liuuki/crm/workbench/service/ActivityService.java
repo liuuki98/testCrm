@@ -5,6 +5,7 @@ import com.liuuki.crm.settings.domain.User;
 import com.liuuki.crm.vo.ActivityVo;
 import com.liuuki.crm.workbench.domain.Activity;
 import com.liuuki.crm.workbench.domain.Remark;
+import com.liuuki.crm.workbench.domain.Tran;
 
 import java.util.List;
 import java.util.Map;
@@ -36,4 +37,12 @@ public interface ActivityService {
     boolean addRemark(Map<String, String> map);
 
     boolean deleteSActivity(String id);
+
+   //查找activity，返回list
+   List<Activity> showActivityList(String id);
+    //根据线索id条件查找相关的市场活动
+    List<Activity> searchActivityByClue(Map<String, String> map);
+    //根据name条件查找相关的市场活动
+    List<Activity> searchActivityByName(String name);
+
 }

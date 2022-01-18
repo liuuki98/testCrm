@@ -1,7 +1,6 @@
 package com.liuuki.crm.workbench.dao;
 
 import com.liuuki.crm.settings.domain.User;
-import com.liuuki.crm.vo.ActivityVo;
 import com.liuuki.crm.workbench.domain.Activity;
 
 import java.util.List;
@@ -25,4 +24,10 @@ public interface ActivityDao {
     Activity selectActivityByAId(String id);
 
     int deleteSActivity(String id);
+
+    List<Activity> showActivityList(String id);
+
+    List<Activity> searchActivityByClue(Map<String, String> map);
+
+    List<Activity> searchActivityByName(String name);
 }
