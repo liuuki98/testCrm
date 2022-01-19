@@ -35,4 +35,8 @@
         #{address}
         )
     </insert>
+
+    <select id="getCustomerName" resultType="String">
+        select fullname from tbl_contacts where fullname like '%' #{name} '%'
+    </select>
 </mapper>

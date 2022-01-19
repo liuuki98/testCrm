@@ -39,4 +39,10 @@
         #{address}
         )
     </insert>
+
+
+
+    <select id="searchContactsByName" resultType="com.liuuki.crm.workbench.domain.Contacts">
+        select fullname from tbl_contacts where fullname like '%' #{name} '%'
+    </select>
 </mapper>

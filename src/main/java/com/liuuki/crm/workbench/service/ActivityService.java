@@ -45,4 +45,5 @@ public interface ActivityService {
     //根据name条件查找相关的市场活动
     List<Activity> searchActivityByName(String name);
 
+
 }

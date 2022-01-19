@@ -20,7 +20,6 @@ public class DicServiceImp implements DicService {
     public List<Dictype> getTypes() {
         DictypeDao dic = SqlSessionUtil.getSqlSession().getMapper(DictypeDao.class);
         List<Dictype> dictypeList= dic.getTypes();
-
         return dictypeList;
     }
 

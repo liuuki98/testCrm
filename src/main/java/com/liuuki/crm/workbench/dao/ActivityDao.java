@@ -30,4 +30,6 @@ public interface ActivityDao {
     List<Activity> searchActivityByClue(Map<String, String> map);
 
     List<Activity> searchActivityByName(String name);
+
+
 }

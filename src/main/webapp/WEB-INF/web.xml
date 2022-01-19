@@ -4,7 +4,7 @@
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>
   </welcome-file-list>
-
+  <!--统一编码格式为中文utf-8 -->
   <filter>
     <filter-name>encodingFilter</filter-name>
     <filter-class>com.liuuki.crm.webFilter.EncodingFilter</filter-class>
@@ -17,7 +17,7 @@
     <filter-name>encodingFilter</filter-name>
     <url-pattern>*.do</url-pattern>
   </filter-mapping>
-
+  <!--判断是否登录，负责跳转到登录页面-->
   <filter>
     <filter-name>IsLoginnedFilter</filter-name>
     <filter-class>com.liuuki.crm.webFilter.IsLoginnedFilter</filter-class>
@@ -27,7 +27,11 @@
     <url-pattern>*.do</url-pattern>
     <url-pattern>*.jsp</url-pattern>
   </filter-mapping>
-  
+  <!--负责数据词典的缓存到客户端-->
+  <listener>
+    <listener-class>com.liuuki.crm.settings.web.listener.Initlistener</listener-class>
+  </listener>
+
   <servlet>
     <servlet-name>UserController</servlet-name>
     <servlet-class>com.liuuki.crm.settings.web.controller.UserController</servlet-class>
@@ -37,6 +41,7 @@
     <url-pattern>/settings/user/login.do</url-pattern>
   </servlet-mapping>
 
+  <!--处理市场活动及相关的业务员-->
   <servlet>
     <servlet-name>ActivityController</servlet-name>
     <servlet-class>com.liuuki.crm.workbench.web.controller.ActivityController</servlet-class>
@@ -58,9 +63,39 @@
     <url-pattern>/workbench/activity/saveRemark.do</url-pattern>
 
   </servlet-mapping>
-  
-  
-  
+
+  <!--处理线索及相关的业务员-->
+  <servlet>
+    <servlet-name>ClueController</servlet-name>
+    <servlet-class>com.liuuki.crm.workbench.web.controller.ClueController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ClueController</servlet-name>
+    <url-pattern>/workbench/clue/getUserList.do</url-pattern>
+    <url-pattern>/workbench/clue/pageList.do</url-pattern>
+    <url-pattern>/workbench/clue/saveClue.do</url-pattern>
+    <url-pattern>/workbench/clue/detail.do</url-pattern>
+    <url-pattern>/workbench/clue/showActivityList.do</url-pattern>
+    <url-pattern>/workbench/clue/deleteCar.do</url-pattern>
+    <url-pattern>/workbench/clue/searchActivityByClue.do</url-pattern>
+    <url-pattern>/workbench/clue/bindClueAndAc.do</url-pattern>
+    <url-pattern>/workbench/clue/searchActivityByName.do</url-pattern>
+    <url-pattern>/workbench/clue/convert.do</url-pattern>
+  </servlet-mapping>
+
+
+  <servlet>
+    <servlet-name>TransactionController</servlet-name>
+    <servlet-class>com.liuuki.crm.workbench.web.controller.TransactionController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>TransactionController</servlet-name>
+    <url-pattern>/workbench/transaction/create.do</url-pattern>
+  </servlet-mapping>
+
+
+
+
 </web-app>
 
 

@@ -1,24 +1,163 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%
+String basePath = request.getScheme() +"://" + request.getServerName() + ":" +request.getServerPort() + request.getContextPath()+"/";
+%>
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
+	<base href="<%=basePath%>" />
+	<meta charset="UTF-8">
 
-<link href="../../jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
-<link href="../../jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" />
+	<link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+	<link href="jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" />
+	<link rel="stylesheet" type="text/css" href="jquery/bs_pagination/jquery.bs_pagination.min.css">
 
-<script type="text/javascript" src="../../jquery/jquery-1.11.1-min.js"></script>
-<script type="text/javascript" src="../../jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="../../jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
-<script type="text/javascript" src="../../jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
+	<script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
+	<script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
+	<script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
+	<script type="text/javascript" src="jquery/bs_pagination/jquery.bs_pagination.min.js"></script>
+	<script type="text/javascript" src="jquery/bs_pagination/en.js"></script>
+
 
 <script type="text/javascript">
 
 	$(function(){
-		
-		
-		
+
+		//添加日历插件
+		$(".time").datetimepicker({
+			language:  "zh-CN",
+			format: "yyyy-mm-dd",//显示格式
+			minView: 2,//设置只显示到月份
+			initialDate: new Date(),//初始化当前日期
+			weekStart:1,
+			autoclose: true,//选中自动关闭
+			todayBtn: true, //显示今日按钮
+			clearBtn : true,
+			pickerPosition: "top-left"
+		});
+		pageList(1,2);
+		//初始化创建线索的模态窗口
+		$("#createBtn").click(function () {
+
+
+			$.ajax({
+				url:"workbench/clue/getUserList.do",
+				type:"get",
+				dataType:"json",
+				success:function (data) {
+					$("#create-clueOwner").html("");
+					$.each(data,function (index,item) {
+						$("#create-clueOwner").append($("<option value='"+item.id+"'>"+item.name+"</option>"));
+					});
+					$("#reset")[0].reset();
+					$("#create-clueOwner").val("${user.id}");
+
+					$("#createClueModal").modal("show");
+				}
+			})
+		});
+		//关闭创建线索的模态窗口
+		$("#closeModalBtn").click(function () {
+			$("#createClueModal").modal("hide");
+
+		});
+		//保存线索到数据库
+		$("#saveBtn").click(function () {
+			$.ajax({
+				url:"workbench/clue/saveClue.do",
+				data:{
+					"fullname":$("#create-surname").val().trim(),
+					"appellation":$("#create-call").val().trim(),
+					"owner":$("#create-clueOwner").val().trim(),
+					"company":$("#create-company").val().trim(),
+					"job":$("#create-job").val().trim(),
+					"email":$("#create-email").val().trim(),
+					"phone":$("#create-phone").val().trim(),
+					"website":$("#create-website").val().trim(),
+					"mphone":$("#create-mphone").val().trim(),
+					"state":$("#create-status").val().trim(),
+					"source":$("#create-source").val().trim(),
+					"description":$("#create-describe").val().trim(),
+					"contactSummary":$("#create-contactSummary").val().trim(),
+					"nextContactTime":$("#create-nextContactTime").val().trim(),
+					"address":$("#create-address").val().trim()
+				},
+				type:"post",
+				dataType:"json",
+				success:function(data){
+					if(data.success){
+						pageList(1,$("#activityPage").bs_pagination('getOption', 'rowsPerPage'));
+						$("#createClueModal").modal("hide");
+					}
+			}
+
+			})
+		})
+
+
+
+
 	});
-	
+
+	function pageList(pageNum,pageSize){
+		$.ajax({
+			url:"workbench/clue/pageList.do",
+			data:{
+				"pageNum":pageNum,
+				"pageSize":pageSize,
+				"fullname":$("#select-name").val().trim(),
+				"company":$("#select-company").val().trim(),
+				"owner":$("#select-owner").val().trim(),
+				"source":$("#select-source").val().trim(),
+				"phone":$("#select-phone").val().trim(),
+				"mphone":$("#select-mphone").val().trim(),
+				"state":$("#select-clueState").val().trim()
+			},
+			type:"get",
+			dataType:"json",
+			success:function (data) {
+				var html="";
+				$.each(data.datalist,function (index,item) {
+					html += '<tr>';
+					html +=	'<td><input type="checkbox" name="xzBtn" value="'+item.id+'"/></td>';
+					html += '<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href=\'workbench/clue/detail.do?id='+item.id+'\';">'+item.fullname+'</a></td>';
+					html += '<td>'+item.company+'</td>';
+					html += '<td>'+item.phone+'</td>';
+					html += '<td>'+item.mphone+'</td>';
+					html += '<td>'+item.source+'</td>';
+					html += '<td>'+item.owner+'</td>';
+					html += '<td>'+item.state+'</td>';
+					html += '</tr>';
+
+				});
+
+				var totalPages=data.pagesTotal%pageSize==0?data.pagesTotal/pageSize:parseInt(data.pagesTotal/pageSize)+1;
+				$("#display").html(html);
+				//分页插件
+				$("#activityPage").bs_pagination({
+					currentPage: pageNum, // 页码
+					rowsPerPage: pageSize, // 每页显示的记录条数
+					maxRowsPerPage: 10, // 每页最多显示的记录条数
+					totalPages: totalPages, // 总页数
+					totalRows: data.pagesTotal, // 总记录条数
+
+					visiblePageLinks: 3, // 显示几个卡片
+
+					showGoToPage: true,
+					showRowsPerPage: true,
+					showRowsInfo: true,
+					showRowsDefaultInfo: true,
+
+					onChangePage : function(event, data){
+						pageList(data.currentPage , data.rowsPerPage);
+					}
+				});
+			}
+		})
+	};
+
 </script>
 </head>
 <body>
@@ -34,15 +173,13 @@
 					<h4 class="modal-title" id="myModalLabel">创建线索</h4>
 				</div>
 				<div class="modal-body">
-					<form class="form-horizontal" role="form">
+					<form class="form-horizontal" role="form" id="reset">
 					
 						<div class="form-group">
 							<label for="create-clueOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="create-clueOwner">
-								  <option>zhangsan</option>
-								  <option>lisi</option>
-								  <option>wangwu</option>
+
 								</select>
 							</div>
 							<label for="create-company" class="col-sm-2 control-label">公司<span style="font-size: 15px; color: red;">*</span></label>
@@ -56,11 +193,9 @@
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="create-call">
 								  <option></option>
-								  <option>先生</option>
-								  <option>夫人</option>
-								  <option>女士</option>
-								  <option>博士</option>
-								  <option>教授</option>
+									<c:forEach var="item" items="${applicationScope.appellation}">
+										<option value="${item.value}">${item.text}</option>
+									</c:forEach>
 								</select>
 							</div>
 							<label for="create-surname" class="col-sm-2 control-label">姓名<span style="font-size: 15px; color: red;">*</span></label>
@@ -99,14 +234,11 @@
 							<label for="create-status" class="col-sm-2 control-label">线索状态</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="create-status">
-								  <option></option>
-								  <option>试图联系</option>
-								  <option>将来联系</option>
-								  <option>已联系</option>
-								  <option>虚假线索</option>
-								  <option>丢失线索</option>
-								  <option>未联系</option>
-								  <option>需要条件</option>
+									<option></option>
+									<c:forEach items="${applicationScope.clueState}" var="item">
+										<option value="${item.value}">${item.text}</option>
+									</c:forEach>
+
 								</select>
 							</div>
 						</div>
@@ -115,21 +247,10 @@
 							<label for="create-source" class="col-sm-2 control-label">线索来源</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="create-source">
-								  <option></option>
-								  <option>广告</option>
-								  <option>推销电话</option>
-								  <option>员工介绍</option>
-								  <option>外部介绍</option>
-								  <option>在线商场</option>
-								  <option>合作伙伴</option>
-								  <option>公开媒介</option>
-								  <option>销售邮件</option>
-								  <option>合作伙伴研讨会</option>
-								  <option>内部研讨会</option>
-								  <option>交易会</option>
-								  <option>web下载</option>
-								  <option>web调研</option>
-								  <option>聊天</option>
+									<option></option>
+									<c:forEach var="item" items="${applicationScope.source}">
+										<option value="${item.value}">${item.text}</option>
+									</c:forEach>
 								</select>
 							</div>
 						</div>
@@ -154,7 +275,7 @@
 							<div class="form-group">
 								<label for="create-nextContactTime" class="col-sm-2 control-label">下次联系时间</label>
 								<div class="col-sm-10" style="width: 300px;">
-									<input type="text" class="form-control" id="create-nextContactTime">
+									<input type="text" class="form-control time" id="create-nextContactTime">
 								</div>
 							</div>
 						</div>
@@ -173,8 +294,8 @@
 					
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal">保存</button>
+					<button type="button" class="btn btn-default" id="closeModalBtn">关闭</button>
+					<button type="button" class="btn btn-primary"id="saveBtn">保存</button>
 				</div>
 			</div>
 		</div>
@@ -213,11 +334,7 @@
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="edit-call">
 								  <option></option>
-								  <option selected>先生</option>
-								  <option>夫人</option>
-								  <option>女士</option>
-								  <option>博士</option>
-								  <option>教授</option>
+
 								</select>
 							</div>
 							<label for="edit-surname" class="col-sm-2 control-label">姓名<span style="font-size: 15px; color: red;">*</span></label>
@@ -357,43 +474,32 @@
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">名称</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control" id="select-name" type="text">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">公司</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control"id="select-company" type="text">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">公司座机</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control" id="select-phone" type="text">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">线索来源</div>
-					  <select class="form-control">
+					  <select class="form-control" id="select-source">
 					  	  <option></option>
-					  	  <option>广告</option>
-						  <option>推销电话</option>
-						  <option>员工介绍</option>
-						  <option>外部介绍</option>
-						  <option>在线商场</option>
-						  <option>合作伙伴</option>
-						  <option>公开媒介</option>
-						  <option>销售邮件</option>
-						  <option>合作伙伴研讨会</option>
-						  <option>内部研讨会</option>
-						  <option>交易会</option>
-						  <option>web下载</option>
-						  <option>web调研</option>
-						  <option>聊天</option>
+					  	 	<c:forEach items="${applicationScope.source}" var="item">
+								<option value="${item.value}">${item.text}</option>
+							</c:forEach>
 					  </select>
 				    </div>
 				  </div>
@@ -403,7 +509,7 @@
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">所有者</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control" type="text" id="select-owner">
 				    </div>
 				  </div>
 				  
@@ -412,35 +518,31 @@
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">手机</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control" id="select-mphone" type="text">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">线索状态</div>
-					  <select class="form-control">
+					  <select class="form-control"id="select-clueState">
 					  	<option></option>
-					  	<option>试图联系</option>
-					  	<option>将来联系</option>
-					  	<option>已联系</option>
-					  	<option>虚假线索</option>
-					  	<option>丢失线索</option>
-					  	<option>未联系</option>
-					  	<option>需要条件</option>
+						  <c:forEach items="${applicationScope.clueState}" var="item">
+							  <option value="${item.value}">${item.text}</option>
+						  </c:forEach>
 					  </select>
 				    </div>
 				  </div>
 
-				  <button type="submit" class="btn btn-default">查询</button>
+				  <button type="button" class="btn btn-default" id="selectBtn">查询</button>
 				  
 				</form>
 			</div>
 			<div class="btn-toolbar" role="toolbar" style="background-color: #F7F7F7; height: 50px; position: relative;top: 40px;">
 				<div class="btn-group" style="position: relative; top: 18%;">
-				  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createClueModal"><span class="glyphicon glyphicon-plus"></span> 创建</button>
-				  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editClueModal"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
-				  <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+				  <button type="button" class="btn btn-primary" id="createBtn"><span class="glyphicon glyphicon-plus"></span> 创建</button>
+				  <button type="button" class="btn btn-default" id="editBtn"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
+				  <button type="button" class="btn btn-danger"id="deleteBtn"><span class="glyphicon glyphicon-minus"></span> 删除</button>
 				</div>
 				
 				
@@ -459,10 +561,10 @@
 							<td>线索状态</td>
 						</tr>
 					</thead>
-					<tbody>
+					<tbody id="display">
 						<tr>
 							<td><input type="checkbox" /></td>
-							<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.html';">李四先生</a></td>
+							<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='workbench/clue/detail.jsp';">李四先生</a></td>
 							<td>动力节点</td>
 							<td>010-84846003</td>
 							<td>12345678901</td>
@@ -472,7 +574,7 @@
 						</tr>
                         <tr class="active">
                             <td><input type="checkbox" /></td>
-                            <td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.html';">李四先生</a></td>
+                            <td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='workbench/clue/detail.jsp';">李四先生</a></td>
                             <td>动力节点</td>
                             <td>010-84846003</td>
                             <td>12345678901</td>
@@ -485,38 +587,7 @@
 			</div>
 			
 			<div style="height: 50px; position: relative;top: 60px;">
-				<div>
-					<button type="button" class="btn btn-default" style="cursor: default;">共<b>50</b>条记录</button>
-				</div>
-				<div class="btn-group" style="position: relative;top: -34px; left: 110px;">
-					<button type="button" class="btn btn-default" style="cursor: default;">显示</button>
-					<div class="btn-group">
-						<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-							10
-							<span class="caret"></span>
-						</button>
-						<ul class="dropdown-menu" role="menu">
-							<li><a href="#">20</a></li>
-							<li><a href="#">30</a></li>
-						</ul>
-					</div>
-					<button type="button" class="btn btn-default" style="cursor: default;">条/页</button>
-				</div>
-				<div style="position: relative;top: -88px; left: 285px;">
-					<nav>
-						<ul class="pagination">
-							<li class="disabled"><a href="#">首页</a></li>
-							<li class="disabled"><a href="#">上一页</a></li>
-							<li class="active"><a href="#">1</a></li>
-							<li><a href="#">2</a></li>
-							<li><a href="#">3</a></li>
-							<li><a href="#">4</a></li>
-							<li><a href="#">5</a></li>
-							<li><a href="#">下一页</a></li>
-							<li class="disabled"><a href="#">末页</a></li>
-						</ul>
-					</nav>
-				</div>
+				<div id="activityPage"></div>
 			</div>
 			
 		</div>

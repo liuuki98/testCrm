@@ -10,7 +10,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 public class SqlSessionUtil {
 	
-	private SqlSessionUtil(){}
+	public SqlSessionUtil(){}
 	
 	private static SqlSessionFactory factory;
 	

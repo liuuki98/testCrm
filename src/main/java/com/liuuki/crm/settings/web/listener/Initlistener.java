@@ -24,9 +24,10 @@ import java.util.Set;
 public class Initlistener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent event) {
+
         ServletContext servletContext=event.getServletContext();
         Map<String,List<DicValue>> map = new HashMap<>();
-        DicService dicService =(DicService) ServiceFactory.getService(new DicServiceImp());
+        DicService dicService =(DicService)ServiceFactory.getService(new DicServiceImp());
 
 
         List<Dictype> dictypeList=dicService.getTypes();

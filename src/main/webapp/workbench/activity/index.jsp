@@ -49,9 +49,8 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 					$.each(data,function (index,item) {
 						$("#create-marketActivityOwner").append("<option value='"+item.id+"'>"+item.name+"</option>")
 					});
-					$("#create-marketActivityOwner").val("${sessionScope.user.id}");
-
 					$("#activityAddFrom")[0].reset();
+					$("#create-marketActivityOwner").val("${sessionScope.user.id}");
 					$("#createActivityModal").modal("show"); //打开窗口命令
 				}
 
@@ -498,14 +497,14 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 					<tbody id="selectDisplay">
 <%--						<tr class="active">--%>
 <%--							<td><input type="checkbox" /></td>--%>
-<%--							<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.html';">发传单</a></td>--%>
+<%--							<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.jsp';">发传单</a></td>--%>
 <%--                            <td>zhangsan</td>--%>
 <%--							<td>2020-10-10</td>--%>
 <%--							<td>2020-10-20</td>--%>
 <%--						</tr>--%>
 <%--                        <tr class="active">--%>
 <%--                            <td><input type="checkbox" /></td>--%>
-<%--                            <td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.html';">发传单</a></td>--%>
+<%--                            <td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.jsp';">发传单</a></td>--%>
 <%--                            <td>zhangsan</td>--%>
 <%--                            <td>2020-10-10</td>--%>
 <%--                            <td>2020-10-20</td>--%>

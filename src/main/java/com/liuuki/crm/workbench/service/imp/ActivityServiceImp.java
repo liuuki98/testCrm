@@ -232,6 +232,7 @@ public class ActivityServiceImp implements ActivityService {
 
     @Override
     public List<Activity> searchActivityByName(String name) {
+        System.out.println("进入到服务层的getActivityByName");
         String path="mybatis.xml";
         InputStream inputStream=null;
         SqlSession session=null;
@@ -248,6 +249,5 @@ public class ActivityServiceImp implements ActivityService {
        List<Activity> activityList= activityDao.searchActivityByName(name);
         return activityList;
     }
-
 
 }

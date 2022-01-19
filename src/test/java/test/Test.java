@@ -1,6 +1,11 @@
 package test;
 
+import com.liuuki.crm.settings.dao.DictypeDao;
+import com.liuuki.crm.settings.domain.Dictype;
 import com.liuuki.crm.util.MD5Util;
+import com.liuuki.crm.util.SqlSessionUtil;
+
+import java.util.List;
 
 /**
  * @ClassName Test
@@ -11,6 +16,21 @@ import com.liuuki.crm.util.MD5Util;
  **/
 public class Test {
     public static void main(String[] args) {
-        System.out.println(MD5Util.getMD5("123456"));
+        DictypeDao dic = SqlSessionUtil.getSqlSession().getMapper(DictypeDao.class);
+        List<Dictype> dictypeList= dic.getTypes();
     }
+
+
+//    Map<String,String> map1=new HashMap<>();
+////        ResourceBundle rb =ResourceBundle.getBundle("Stage2Possibility");
+////        Enumeration<String> keys = rb.getKeys();
+////        while(keys.hasMoreElements()){
+////            String key=keys.nextElement();
+////
+////            String value=rb.getString(key);
+////            map1.put(key,value);
+////        }
+////
+////        servletContext.setAttribute("map",map1);
+
 }

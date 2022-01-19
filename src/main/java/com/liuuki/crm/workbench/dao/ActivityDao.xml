@@ -147,4 +147,18 @@
         order by a.createTime desc
     </select>
 
+    <select id="getActivityByName" resultType="com.liuuki.crm.workbench.domain.Activity">
+        select
+            a.name,
+            u.name as owner,
+            a.startDate,
+            a.endDate,
+            a.id
+        from tbl_activity as a
+        join tbl_user as u
+        on a.owner=u.id
+        where a.name like '%' #{name} '%'
+        order by a.createTime desc
+    </select>
+
 </mapper>
