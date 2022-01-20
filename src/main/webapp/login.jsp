@@ -53,7 +53,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				dataType:"json",
 				success:function (data) {
 					if(data.success){
-						$("#msg").html("ok");
+
 						window.location.href="workbench/index.jsp";
 					}else{
 						$("#msg").html(data.msg);

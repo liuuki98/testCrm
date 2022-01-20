@@ -12,6 +12,9 @@ import com.liuuki.crm.workbench.domain.Tran;
 import com.liuuki.crm.workbench.domain.TranHistory;
 import com.liuuki.crm.workbench.service.TranService;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * @ClassName TranServiceImp
  * @Description TOOD
@@ -66,5 +69,27 @@ public class TranServiceImp implements TranService {
         }
 
         return flag;
+    }
+
+    @Override
+    public List<Tran> pageList(Map<String, Object> map) {
+        TranDao tranDao = SqlSessionUtil.getSqlSession().getMapper(TranDao.class);
+        List<Tran> tranList = tranDao.pageList(map);
+
+        return tranList;
+    }
+
+    @Override
+    public int getTotalPages(Map<String, Object> map) {
+        TranDao tranDao = SqlSessionUtil.getSqlSession().getMapper(TranDao.class);
+        int i =tranDao.getTotalPages(map);
+        return i;
+    }
+
+    @Override
+    public Tran detail(String id) {
+        TranDao tranDao = SqlSessionUtil.getSqlSession().getMapper(TranDao.class);
+        Tran tran= tranDao.getTranbyId(id);
+        return tran;
     }
 }

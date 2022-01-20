@@ -5,6 +5,7 @@ import com.liuuki.crm.util.PrintJson;
 import com.liuuki.crm.util.ServiceFactory;
 
 import com.liuuki.crm.util.UUIDUtil;
+import com.liuuki.crm.vo.ActivityVo;
 import com.liuuki.crm.workbench.domain.Activity;
 import com.liuuki.crm.workbench.domain.Contacts;
 import com.liuuki.crm.workbench.domain.Tran;
@@ -22,7 +23,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @ClassName TransactionController
@@ -45,7 +49,65 @@ public class TransactionController extends HttpServlet {
             searchContactsByName(request,response);
         }else if("/workbench/transaction/saveTrans.do".equals(path)){
             saveTrans(request,response);
+        }else if("/workbench/transaction/pageList.do".equals(path)){
+            pageList(request,response);
+        }else if("/workbench/transaction/detail.do".equals(path)){
+            detail(request,response);
+
         }
+    }
+
+    /**
+     * 处理请求跳转到detail页面
+     * @param request
+     * @param response
+     */
+    private void detail(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String id=request.getParameter("id");
+
+        TranService tranService=(TranService)ServiceFactory.getService(new TranServiceImp());
+        Tran tran=tranService.detail(id);
+        System.out.println("客户的名字是（ID）"+tran.getCustomerId());
+        String stage=tran.getStage();
+        Map<String,String> map =(Map<String, String>) request.getServletContext().getAttribute("map");
+        String posibility = map.get(stage);
+        request.setAttribute("posibility",posibility);
+        request.setAttribute("tran",tran);
+        request.getRequestDispatcher("/workbench/transaction/detail.jsp").forward(request,response);
+
+    }
+
+    private void pageList(HttpServletRequest request, HttpServletResponse response) {
+        TranService tranService=(TranService)ServiceFactory.getService(new TranServiceImp());
+        String pageNum=request.getParameter("pageNum");
+        String pageSize=request.getParameter("pageSize");
+        String owner=request.getParameter("owner");
+        String name=request.getParameter("name");
+        String customerName=request.getParameter("customerName");
+        String stage=request.getParameter("stage");
+        String type=request.getParameter("type");
+        String source=request.getParameter("source");
+        String contactsName=request.getParameter("contactsName");
+        //设置开始页和结束页的值
+        int pageStart=(Integer.parseInt(pageNum)-1)*(Integer.parseInt(pageSize));
+        int pageEnd=Integer.parseInt(pageSize);
+        Map<String,Object> map = new HashMap<>();
+
+        map.put("pageStart",pageStart);
+        map.put("pageEnd",pageEnd);
+        map.put("owner",owner);
+        map.put("name",name);
+        map.put("customerName",customerName);
+        map.put("stage",stage);
+        map.put("type",type);
+        map.put("source",source);
+        map.put("contactsName",contactsName);
+        int count=tranService.getTotalPages(map);
+        List<Tran> tranList =tranService.pageList(map);
+        ActivityVo<Tran> vo = new ActivityVo<>();
+        vo.setPagesTotal(count);
+        vo.setDatalist(tranList);
+        PrintJson.printJsonObj(response,vo);
     }
 
     private void saveTrans(HttpServletRequest request, HttpServletResponse response) throws IOException {

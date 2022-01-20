@@ -95,6 +95,8 @@
     <url-pattern>/workbench/transaction/getActivityByName.do</url-pattern>
     <url-pattern>/workbench/transaction/searchContactsByName.do</url-pattern>
     <url-pattern>/workbench/transaction/saveTrans.do</url-pattern>
+    <url-pattern>/workbench/transaction/pageList.do</url-pattern>
+    <url-pattern>/workbench/transaction/detail.do</url-pattern>
 
   </servlet-mapping>
 
