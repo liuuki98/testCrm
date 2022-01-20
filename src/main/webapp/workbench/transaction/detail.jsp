@@ -1,6 +1,24 @@
+<%@ page import="java.util.Map" %>
+<%@ page import="java.util.List" %>
+<%@ page import="com.liuuki.crm.settings.domain.DicValue" %>
+<%@ page import="com.liuuki.crm.workbench.domain.Tran" %>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
 <%
 String basePath = request.getScheme() +"://" + request.getServerName() + ":" +request.getServerPort() + request.getContextPath()+"/";
+	List<DicValue> stagelist=(List<DicValue>) application.getAttribute("stage");
+	//取得stage和posibility的对应关系
+	Map<String,String> map = (Map<String,String>)application.getAttribute("map");
+
+	int point=0;
+	for(int i=0;i<stagelist.size();i++){
+		String stageValue=stagelist.get(i).getValue();
+		String posibility=map.get(stageValue);
+		if("0".equals(posibility)){
+			point=i;
+			break;
+		}
+	}
+
 %>
 <!DOCTYPE html>
 <html>
@@ -115,24 +133,100 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 	<!-- 阶段状态 -->
 	<div style="position: relative; left: 40px; top: -50px;">
 		阶段&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		<span class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" data-content="资质审查" style="color: #90F790;"></span>
+		<%
+			Tran currentTran =(Tran)request.getAttribute("tran");
+			String currentPosibility = map.get(currentTran.getStage());
+
+			if("0".equals(currentPosibility)){
+
+				for(int i=0;i<stagelist.size();i++){
+					String stageList=stagelist.get(i).getValue();
+					String posibilityList=map.get(stageList);
+					if(stageList.equals(currentTran.getStage())){
+						//红×
+		%>
+		<span id="<%=i%>" onclick="changeStage('<%=stageList%>','<%=i%>')" class="glyphicon glyphicon-remove mystage" data-toggle="popover" data-placement="bottom" data-content="资质审查" style="color: #F00;"></span>
 		-----------
-		<span class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" data-content="需求分析" style="color: #90F790;"></span>
+		<%}else{
+						//黑
+		%>
+		<span id="<%=i%>" onclick="changeStage('<%=stageList%>','<%=i%>')" class="glyphicon glyphicon-remove mystage" data-toggle="popover" data-placement="bottom" data-content="资质审查" style="color: #000;"></span>
 		-----------
-		<span class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" data-content="价值建议" style="color: #90F790;"></span>
+		<%
+					}
+
+				}
+			}else{
+				int index=0;
+				for(int i=0;i<stagelist.size();i++){
+					String stageList=stagelist.get(i).getValue();
+
+					if(stageList.equals(currentTran.getStage())){
+						//当前阶段
+						index=i;
+						break;
+					}
+				}
+
+				for (int i=0;i<stagelist.size();i++){
+					String stageList=stagelist.get(i).getValue();
+					String posibilityList=map.get(stageList);
+					if ("0".equals(posibilityList)){
+						//黑×
+		%>
+		<span id="<%=i%>" onclick="changeStage('<%=stageList%>','<%=i%>')" class="glyphicon glyphicon-remove mystage" data-toggle="popover" data-placement="bottom" data-content="资质审查" style="color: #000;"></span>
 		-----------
-		<span class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" data-content="确定决策者" style="color: #90F790;"></span>
+		<%
+					}else {
+						if (i<index){
+							//完成
+		%>
+		<span id="<%=i%>" onclick="changeStage('<%=stageList%>','<%=i%>')" class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" data-content="资质审查" style="color: #90F790;"></span>
 		-----------
-		<span class="glyphicon glyphicon-map-marker mystage" data-toggle="popover" data-placement="bottom" data-content="提案/报价" style="color: #90F790;"></span>
+		<%
+						}else if(i==index){
+							//当前
+		%>
+		<span id="<%=i%>" onclick="changeStage('<%=stageList%>','<%=i%>')" class="glyphicon glyphicon-map-marker mystage" data-toggle="popover" data-placement="bottom" data-content="资质审查" style="color:#90F790;"></span>
 		-----------
-		<span class="glyphicon glyphicon-record mystage" data-toggle="popover" data-placement="bottom" data-content="谈判/复审"></span>
+		<%
+						}else {
+							//等待
+		%>
+		<span id="<%=i%>" onclick="changeStage('<%=stageList%>','<%=i%>')" class="glyphicon glyphicon-record mystage" data-toggle="popover" data-placement="bottom" data-content="资质审查" style="color:black;"></span>
 		-----------
-		<span class="glyphicon glyphicon-record mystage" data-toggle="popover" data-placement="bottom" data-content="成交"></span>
-		-----------
-		<span class="glyphicon glyphicon-record mystage" data-toggle="popover" data-placement="bottom" data-content="丢失的线索"></span>
-		-----------
-		<span class="glyphicon glyphicon-record mystage" data-toggle="popover" data-placement="bottom" data-content="因竞争丢失关闭"></span>
-		-----------
+		<%
+						}
+					}
+
+
+				}
+
+
+
+
+			}
+
+		%>
+
+<%--		<span class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" data-content="资质审查" style="color: #90F790;"></span>--%>
+<%--		-------------%>
+<%--		<span class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" data-content="需求分析" style="color: #90F790;"></span>--%>
+<%--		-------------%>
+<%--		<span class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" data-content="价值建议" style="color: #90F790;"></span>--%>
+<%--		-------------%>
+<%--		<span class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" data-content="确定决策者" style="color: #90F790;"></span>--%>
+<%--		-------------%>
+<%--		<span class="glyphicon glyphicon-map-marker mystage" data-toggle="popover" data-placement="bottom" data-content="提案/报价" style="color: #90F790;"></span>--%>
+<%--		-------------%>
+<%--		<span class="glyphicon glyphicon-record mystage" data-toggle="popover" data-placement="bottom" data-content="谈判/复审"></span>--%>
+<%--		-------------%>
+<%--		<span class="glyphicon glyphicon-record mystage" data-toggle="popover" data-placement="bottom" data-content="成交"></span>--%>
+<%--		-------------%>
+<%--		<span class="glyphicon glyphicon-record mystage" data-toggle="popover" data-placement="bottom" data-content="丢失的线索"></span>--%>
+<%--		-------------%>
+<%--		<span class="glyphicon glyphicon-record mystage" data-toggle="popover" data-placement="bottom" data-content="因竞争丢失关闭"></span>--%>
+<%--		-------------%>
 		<span class="closingDate">2010-10-10</span>
 	</div>
 	
