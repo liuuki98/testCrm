@@ -9,10 +9,7 @@ import com.liuuki.crm.util.ServiceFactory;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @ClassName Initlistener
@@ -41,5 +38,18 @@ public class Initlistener implements ServletContextListener {
         for(String key:set){
             servletContext.setAttribute(key,map.get(key));
         }
+
+
+        Map<String,String> map1=new HashMap<>();
+        ResourceBundle rb =ResourceBundle.getBundle("Stage2Possibility");
+        Enumeration<String> keys = rb.getKeys();
+        while(keys.hasMoreElements()){
+            String key=keys.nextElement();
+
+            String value=rb.getString(key);
+            map1.put(key,value);
+        }
+
+        servletContext.setAttribute("map",map1);
     }
 }

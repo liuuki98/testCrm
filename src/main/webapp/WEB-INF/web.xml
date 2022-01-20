@@ -91,6 +91,11 @@
   <servlet-mapping>
     <servlet-name>TransactionController</servlet-name>
     <url-pattern>/workbench/transaction/create.do</url-pattern>
+    <url-pattern>/workbench/transaction/getCustomerName.do</url-pattern>
+    <url-pattern>/workbench/transaction/getActivityByName.do</url-pattern>
+    <url-pattern>/workbench/transaction/searchContactsByName.do</url-pattern>
+    <url-pattern>/workbench/transaction/saveTrans.do</url-pattern>
+
   </servlet-mapping>
 
 

@@ -12,4 +12,6 @@ public interface CustomerDao {
 
 
     List<String> getCustomerName(String name);
+
+    Customer getSingleCusByName(String customerName);
 }

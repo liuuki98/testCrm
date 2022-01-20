@@ -1,5 +1,7 @@
 package com.liuuki.crm.workbench.service.imp;
 
+import com.liuuki.crm.util.SqlSessionUtil;
+import com.liuuki.crm.workbench.dao.CustomerDao;
 import com.liuuki.crm.workbench.service.CustomerService;
 
 import java.util.List;
@@ -14,6 +16,8 @@ import java.util.List;
 public class CustomerServiceImp implements CustomerService {
     @Override
     public List<String> getCustomerName(String name) {
-        return null;
+        CustomerDao customerDao = SqlSessionUtil.getSqlSession().getMapper(CustomerDao.class);
+       List<String> strings= customerDao.getCustomerName(name);
+        return strings;
     }
 }
