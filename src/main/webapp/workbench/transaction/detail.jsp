@@ -106,8 +106,91 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
                     }, 100);
                 });
 	});
+
+
+	function changeStage(stage,i) {
+		$.ajax({
+			url:"workbench/transaction/changeStage.do",
+			data:{
+				"money":$("#money").html().trim(),
+				"id":"${tran.id}",
+				"stage":stage,
+				"expectedDate":$("#expectedDate").html().trim(),
+			},
+			type:"post",
+			dataType:"json",
+			success:function (data) {
+
+				if(data.success){
+					$("#stage").html(data.tran.stage);
+					$("#posibility").html(data.tran.posibility);
+					$("#editBy").html(data.tran.editBy);
+					$("#editTime").html(data.tran.editTime)
+					changeStageLogo(stage,i);
+
+				}
+			}
+		})
+	};
 	
-	
+	function changeStageLogo(currentStage,index) {
+		pointIndex="<%=point%>";
+		currentPosibility=$("#posibility").html();
+		size=<%=stagelist.size()%>;
+
+		if(currentPosibility=="0"){
+
+			for(var i=0;i<pointIndex;i++){
+				//黑x
+				$("#"+i).removeClass();
+				$("#"+i).addClass("glyphicon glyphicon-remove mystage");
+				$("#"+i).css("color","#000");
+			}
+			for(var i=pointIndex;i<size;i++){
+				if(i==index){
+					//红×
+					$("#"+i).removeClass();
+					$("#"+i).addClass("glyphicon glyphicon-remove mystage");
+					$("#"+i).css("color","#F00");
+				}else {
+					//黑×
+					$("#"+i).removeClass();
+					$("#"+i).css("color","#000");
+					$("#"+i).addClass("glyphicon glyphicon-remove mystage");
+				}
+			}
+
+		}else {
+
+			for(var i=0;i<pointIndex;i++){
+				if(i==index){
+					//当前阶段
+					$("#"+i).removeClass();
+					$("#"+i).css("color","#90F790");
+					$("#"+i).addClass("glyphicon glyphicon-map-marker mystage");
+				}else if (i<index){
+					//完成
+					$("#"+i).removeClass();
+					$("#"+i).css("color","#90F790");
+					$("#"+i).addClass("glyphicon glyphicon-ok-circle mystage");
+				}else if(i>index){
+					//等待完成
+
+					$("#"+i).removeClass();
+					$("#"+i).css("color","#000");
+					$("#"+i).addClass("glyphicon glyphicon-record mystage");
+				}
+			}
+			for(let i=pointIndex;i<size;i++){
+				//黑x
+				$("#"+i).removeClass();
+				$("#"+i).css("color","#000");
+				$("#"+i).addClass("glyphicon glyphicon-remove mystage");
+
+			}
+		}
+
+	}
 	
 </script>
 
@@ -145,12 +228,12 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 					if(stageList.equals(currentTran.getStage())){
 						//红×
 		%>
-		<span id="<%=i%>" onclick="changeStage('<%=stageList%>','<%=i%>')" class="glyphicon glyphicon-remove mystage" data-toggle="popover" data-placement="bottom" data-content="资质审查" style="color: #F00;"></span>
+		<span id="<%=i%>" onclick="changeStage('<%=stageList%>','<%=i%>')" class="glyphicon glyphicon-remove mystage" data-toggle="popover" data-placement="bottom" data-content="<%=stageList%>" style="color: #F00;"></span>
 		-----------
 		<%}else{
 						//黑
 		%>
-		<span id="<%=i%>" onclick="changeStage('<%=stageList%>','<%=i%>')" class="glyphicon glyphicon-remove mystage" data-toggle="popover" data-placement="bottom" data-content="资质审查" style="color: #000;"></span>
+		<span id="<%=i%>" onclick="changeStage('<%=stageList%>','<%=i%>')" class="glyphicon glyphicon-remove mystage" data-toggle="popover" data-placement="bottom" data-content="<%=stageList%>" style="color: #000;"></span>
 		-----------
 		<%
 					}
@@ -174,26 +257,26 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 					if ("0".equals(posibilityList)){
 						//黑×
 		%>
-		<span id="<%=i%>" onclick="changeStage('<%=stageList%>','<%=i%>')" class="glyphicon glyphicon-remove mystage" data-toggle="popover" data-placement="bottom" data-content="资质审查" style="color: #000;"></span>
+		<span id="<%=i%>" onclick="changeStage('<%=stageList%>','<%=i%>')" class="glyphicon glyphicon-remove mystage" data-toggle="popover" data-placement="bottom" data-content="<%=stageList%>" style="color: #000;"></span>
 		-----------
 		<%
 					}else {
 						if (i<index){
 							//完成
 		%>
-		<span id="<%=i%>" onclick="changeStage('<%=stageList%>','<%=i%>')" class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" data-content="资质审查" style="color: #90F790;"></span>
+		<span id="<%=i%>" onclick="changeStage('<%=stageList%>','<%=i%>')" class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" data-content="<%=stageList%>" style="color: #90F790;"></span>
 		-----------
 		<%
 						}else if(i==index){
 							//当前
 		%>
-		<span id="<%=i%>" onclick="changeStage('<%=stageList%>','<%=i%>')" class="glyphicon glyphicon-map-marker mystage" data-toggle="popover" data-placement="bottom" data-content="资质审查" style="color:#90F790;"></span>
+		<span id="<%=i%>" onclick="changeStage('<%=stageList%>','<%=i%>')" class="glyphicon glyphicon-map-marker mystage" data-toggle="popover" data-placement="bottom" data-content="<%=stageList%>" style="color:#90F790;"></span>
 		-----------
 		<%
 						}else {
 							//等待
 		%>
-		<span id="<%=i%>" onclick="changeStage('<%=stageList%>','<%=i%>')" class="glyphicon glyphicon-record mystage" data-toggle="popover" data-placement="bottom" data-content="资质审查" style="color:black;"></span>
+		<span id="<%=i%>" onclick="changeStage('<%=stageList%>','<%=i%>')" class="glyphicon glyphicon-record mystage" data-toggle="popover" data-placement="bottom" data-content="<%=stageList%>" style="color:black;"></span>
 		-----------
 		<%
 						}
@@ -236,7 +319,7 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 			<div style="width: 300px; color: gray;">所有者</div>
 			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${tran.owner}</b></div>
 			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">金额</div>
-			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${tran.money}</b></div>
+			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b id="money">${tran.money}</b></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
 		</div>
@@ -244,7 +327,7 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 			<div style="width: 300px; color: gray;">名称</div>
 			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${tran.customerId}-${tran.name}</b></div>
 			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">预计成交日期</div>
-			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${tran.expectedDate}</b></div>
+			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b id="expectedDate">${tran.expectedDate}</b></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
 		</div>
@@ -252,7 +335,7 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 			<div style="width: 300px; color: gray;">客户名称</div>
 			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${tran.customerId}&nbsp;&nbsp;</b></div>
 			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">阶段</div>
-			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${tran.stage}</b></div>
+			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b id="stage">${tran.stage}</b></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
 		</div>
@@ -260,7 +343,7 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 			<div style="width: 300px; color: gray;">类型</div>
 			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${tran.type}</b></div>
 			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">可能性</div>
-			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${posibility}</b></div>
+			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b id="posibility">${posibility}</b></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
 		</div>
@@ -284,7 +367,7 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 70px;">
 			<div style="width: 300px; color: gray;">修改者</div>
-			<div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>${tran.editBy}&nbsp;&nbsp;</b><small style="font-size: 10px; color: gray;">${tran.editTime}</small></div>
+			<div style="width: 500px;position: relative; left: 200px; top: -20px;"><b id="editBy">${tran.editBy}&nbsp;&nbsp;</b><small id="editTime" style="font-size: 10px; color: gray;">${tran.editTime}</small></div>
 			<div style="height: 1px; width: 550px; background: #D5D5D5; position: relative; top: -20px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 80px;">

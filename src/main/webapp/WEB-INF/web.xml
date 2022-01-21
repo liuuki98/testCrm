@@ -97,6 +97,8 @@
     <url-pattern>/workbench/transaction/saveTrans.do</url-pattern>
     <url-pattern>/workbench/transaction/pageList.do</url-pattern>
     <url-pattern>/workbench/transaction/detail.do</url-pattern>
+    <url-pattern>/workbench/transaction/changeStage.do</url-pattern>
+    <url-pattern>/workbench/transaction/getECharts.do</url-pattern>
 
   </servlet-mapping>
 
