@@ -13,4 +13,10 @@ public interface TranDao {
     int getTotalPages(Map<String, Object> map);
 
     Tran getTranbyId(String id);
+
+    int changeStage(Tran tran);
+
+    int getTotalStage();
+
+    List<Map<String, Object>> getStages();
 }

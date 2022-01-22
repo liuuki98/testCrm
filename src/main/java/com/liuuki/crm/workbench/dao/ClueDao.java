@@ -15,4 +15,10 @@ public interface ClueDao {
     Clue getClueById(String id);
 
     int deleteClueById(String clueId);
+
+    Clue getClueById2(String id);
+
+    int updateClue(Clue clue);
+
+    int deleteClue(String[] id);
 }

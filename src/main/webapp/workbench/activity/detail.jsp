@@ -77,7 +77,7 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 		initRemarkList();
 		$("#remarkBody1").on("mouseover",".remarkDiv",function(){
 			$(this).children("div").children("div").show();
-		})
+		});
 		$("#remarkBody1").on("mouseout",".remarkDiv",function(){
 			$(this).children("div").children("div").hide();
 		});
@@ -194,7 +194,7 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 				}
 
 			})
-		})
+		});
 
 		//删除按钮
 		$("#deleteAcBtn").click(function () {
@@ -255,7 +255,7 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 
 			}
 		})
-	}
+	};
 
 	//删除函数操作
 	function deletRemark(id) {

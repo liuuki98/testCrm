@@ -12,6 +12,7 @@ import com.liuuki.crm.workbench.domain.Tran;
 import com.liuuki.crm.workbench.domain.TranHistory;
 import com.liuuki.crm.workbench.service.TranService;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -91,5 +92,48 @@ public class TranServiceImp implements TranService {
         TranDao tranDao = SqlSessionUtil.getSqlSession().getMapper(TranDao.class);
         Tran tran= tranDao.getTranbyId(id);
         return tran;
+    }
+
+    @Override
+    public boolean changeStage(Tran tran) {
+        System.out.println("进入到service--changeStage");
+        boolean flag =true;
+        TranDao tranDao = SqlSessionUtil.getSqlSession().getMapper(TranDao.class);
+        TranHistoryDao tranHistoryDao = SqlSessionUtil.getSqlSession().getMapper(TranHistoryDao.class);
+
+        int i =tranDao.changeStage(tran);
+        if(i!=1){
+            flag=false;
+        }
+        TranHistory tranHistory = new TranHistory();
+        tranHistory.setId(UUIDUtil.getUUID());
+        tranHistory.setTranId(tran.getId());
+        tranHistory.setCreateBy(tran.getEditBy());
+        tranHistory.setCreateTime(tran.getEditTime());
+        tranHistory.setMoney(tran.getMoney());
+        tranHistory.setExpectedDate(tran.getExpectedDate());
+        tranHistory.setStage(tran.getStage());
+        int i1=tranHistoryDao.saveTranHistory(tranHistory);
+        if(i1!=1){
+            flag=false;
+        }
+
+        return flag;
+    }
+
+    @Override
+    public Map<String, Object> getECharts() {
+        System.out.println("进入到了Service：getECharts");
+        TranDao tranDao = SqlSessionUtil.getSqlSession().getMapper(TranDao.class);
+        Map<String,Object> map=new HashMap<>();
+
+        int total = tranDao.getTotalStage();
+        System.out.println(total);
+
+        List<Map<String, Object>> dataList = tranDao.getStages();
+
+        map.put("total",total);
+        map.put("dataList",dataList);
+        return map;
     }
 }

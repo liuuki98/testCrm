@@ -94,7 +94,163 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 			}
 
 			})
-		})
+		});
+
+		//条件搜索查询功能
+		$("#selectBtn").click(function () {
+			$("#hidden-fullname").val($("#select-name").val().trim());
+			$("#hidden-company").val($("#select-company").val().trim());
+			$("#hidden-owner").val($("#select-owner").val().trim());
+			$("#hidden-source").val($("#select-source").val().trim());
+			$("#hidden-state").val($("#select-stage").val());
+			$("#hidden-phone").val($("#select-phone").val().trim());
+			$("#hidden-mphone").val($("#select-mphone").val().trim());
+			pageList(1,$("#activityPage").bs_pagination('getOption', 'rowsPerPage'));
+
+		});
+		//网页回车键为进行查询
+		$(window).keydown(function (e) {
+			if(e.keyCode==13){
+				$("#hidden-fullname").val($("#select-name").val().trim());
+				$("#hidden-company").val($("#select-company").val().trim());
+				$("#hidden-owner").val($("#select-owner").val().trim());
+				$("#hidden-source").val($("#select-source").val().trim());
+				$("#hidden-state").val($("#select-stage").val().trim());
+				$("#hidden-phone").val($("#select-phone").val().trim());
+				$("#hidden-mphone").val($("#select-mphone").val().trim());
+				pageList(1,$("#activityPage").bs_pagination('getOption', 'rowsPerPage'));
+			}
+		});
+
+		//打开修改模态
+		$("#editBtn").click(function () {
+			$("#edit-clueOwner").val("");
+			var $xz = $("input[name=xzBtn]:checked");
+
+			if($xz.length!=1){
+				alert("至少/至多选择一个元素进行修改！")
+			}else{
+				var clueId=$xz.val();
+				$.ajax({
+					url:"workbench/clue/editInit.do",
+					data:{
+						"clueId":clueId,
+
+					},
+					type:"get",
+					dataType:"json",
+					success:function (data) {
+						$.each(data.userList,function (index,item) {
+							$("#edit-clueOwner").append("<option value='"+item.id+"'>"+item.name+"</option>");
+						});
+						$("#edit-clueOwner").val("${sessionScope.user.id}");
+						$("#hidden-clueId").val(clueId);
+						$("#edit-company").val(data.clue.company);
+						$("#edit-call").val(data.clue.appellation);
+						$("#edit-surname").val(data.clue.fullname);
+						$("#edit-job").val(data.clue.job);
+						$("#edit-email").val(data.clue.email);
+						$("#edit-phone").val(data.clue.phone);
+						$("#edit-website").val(data.clue.website);
+						$("#edit-mphone").val(data.clue.mphone);
+						$("#edit-status").val(data.clue.state);
+						$("#edit-source").val(data.clue.source);
+						$("#edit-describe").val(data.clue.description);
+						$("#edit-contactSummary").val(data.clue.contactSummary);
+						$("#edit-nextContactTime").val(data.clue.nextContactTime);
+						$("#edit-address").val(data.clue.address);
+						$("#editClueModal").modal("show");
+					}
+
+				});
+			}
+
+		});
+
+		//保存修改模态
+		$("#updateBtn").click(function () {
+			$.ajax({
+				url:"workbench/clue/updateClue.do",
+				data:{
+					"id":$("#hidden-clueId").val(),
+					"owner":$("#edit-clueOwner").val(),
+					"company":$("#edit-company").val(),
+					"appellation":$("#edit-call").val(),
+					"fullname":$("#edit-surname").val(),
+					"job":$("#edit-job").val(),
+					"email":$("#edit-email").val(),
+					"phone":$("#edit-phone").val(),
+					"website":$("#edit-website").val(),
+					"mphone":$("#edit-mphone").val(),
+					"state":$("#edit-status").val(),
+					"source":$("#edit-source").val(),
+					"description":$("#edit-describe").val(),
+					"contactSummary":$("#edit-contactSummary").val(),
+					"nextContactTime":$("#edit-nextContactTime").val(),
+					"address":$("#edit-address").val(),
+
+				},
+				type:"post",
+				dataType:"json",
+				success:function (data) {
+					if(data.success){
+						pageList(1,$("#activityPage").bs_pagination('getOption', 'rowsPerPage'));
+						$("#editClueModal").modal("hide");
+
+					}else {
+						alert("更新失败！");
+					}
+				}
+
+			});
+		});
+
+		$("#qxBtn").click(function () {
+			$("input[name=xzBtn]").prop("checked",this.checked);
+		});
+		$("#display").on("click",$("#input[name=xzBtn]"),function () {
+			$("#qxBtn").prop("checked",$("input[name=xzBtn]:checked").length==$("input[name=xzBtn]").length);
+		});
+
+
+		//删除
+		$("#deleteBtn").click(function () {
+
+			var param="";
+			var $buttons=$("input[name=xzBtn]:checked");
+			if($buttons.length==0){
+				alert("请选择要删除的项目后点击删除按钮！")
+			}else{ //选择了至少一个选项
+
+				if(confirm("确定要删除吗？")){
+
+					for(var i=0;i<$buttons.length;i++){
+						param+= "id="+$($buttons[i]).val();
+						if(i<$buttons.length-1){
+							param += "&";
+						}
+					}
+					alert(param);
+					$.ajax({
+						url:"workbench/clue/deleteClue.do",
+						data:param,
+						type:"post",
+						dataType:"json",
+						success:function (data) {
+
+							if(data.success){
+								pageList($("#activityPage").bs_pagination('getOption', 'currentPage')
+										,$("#activityPage").bs_pagination('getOption', 'rowsPerPage'));
+							}else{
+								alert("删除失败！");
+							}
+						}
+					})
+				}
+			}
+
+		});
+
 
 
 
@@ -102,18 +258,19 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 	});
 
 	function pageList(pageNum,pageSize){
+
 		$.ajax({
 			url:"workbench/clue/pageList.do",
 			data:{
 				"pageNum":pageNum,
 				"pageSize":pageSize,
-				"fullname":$("#select-name").val().trim(),
-				"company":$("#select-company").val().trim(),
-				"owner":$("#select-owner").val().trim(),
-				"source":$("#select-source").val().trim(),
-				"phone":$("#select-phone").val().trim(),
-				"mphone":$("#select-mphone").val().trim(),
-				"state":$("#select-clueState").val().trim()
+				"fullname":$("#hidden-fullname").val().trim(),
+				"company":$("#hidden-company").val().trim(),
+				"owner":$("#hidden-owner").val().trim(),
+				"source":$("#hidden-source").val().trim(),
+				"phone":$("#hidden-phone").val().trim(),
+				"mphone":$("#hidden-mphone").val().trim(),
+				"state":$("#hidden-state").val().trim()
 			},
 			type:"get",
 			dataType:"json",
@@ -161,6 +318,15 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 </script>
 </head>
 <body>
+	<input type="hidden" id="hidden-fullname">
+	<input type="hidden" id="hidden-company">
+	<input type="hidden" id="hidden-owner">
+	<input type="hidden" id="hidden-source">
+	<input type="hidden" id="hidden-phone">
+	<input type="hidden" id="hidden-mphone">
+	<input type="hidden" id="hidden-state">
+	<input type="hidden" id="hidden-clueId">
+
 
 	<!-- 创建线索的模态窗口 -->
 	<div class="modal fade" id="createClueModal" role="dialog">
@@ -299,7 +465,7 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 				</div>
 			</div>
 		</div>
-	</div>
+		</div>
 	
 	<!-- 修改线索的模态窗口 -->
 	<div class="modal fade" id="editClueModal" role="dialog">
@@ -318,9 +484,7 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 							<label for="edit-clueOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="edit-clueOwner">
-								  <option>zhangsan</option>
-								  <option>lisi</option>
-								  <option>wangwu</option>
+
 								</select>
 							</div>
 							<label for="edit-company" class="col-sm-2 control-label">公司<span style="font-size: 15px; color: red;">*</span></label>
@@ -334,7 +498,9 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="edit-call">
 								  <option></option>
-
+									<c:forEach var="item" items="${applicationScope.appellation}">
+										<option value="${item.value}">${item.text}</option>
+									</c:forEach>
 								</select>
 							</div>
 							<label for="edit-surname" class="col-sm-2 control-label">姓名<span style="font-size: 15px; color: red;">*</span></label>
@@ -374,13 +540,9 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="edit-status">
 								  <option></option>
-								  <option>试图联系</option>
-								  <option>将来联系</option>
-								  <option selected>已联系</option>
-								  <option>虚假线索</option>
-								  <option>丢失线索</option>
-								  <option>未联系</option>
-								  <option>需要条件</option>
+									<c:forEach var="item" items="${applicationScope.clueState}">
+										<option value="${item.value}">${item.text}</option>
+									</c:forEach>
 								</select>
 							</div>
 						</div>
@@ -390,20 +552,9 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="edit-source">
 								  <option></option>
-								  <option selected>广告</option>
-								  <option>推销电话</option>
-								  <option>员工介绍</option>
-								  <option>外部介绍</option>
-								  <option>在线商场</option>
-								  <option>合作伙伴</option>
-								  <option>公开媒介</option>
-								  <option>销售邮件</option>
-								  <option>合作伙伴研讨会</option>
-								  <option>内部研讨会</option>
-								  <option>交易会</option>
-								  <option>web下载</option>
-								  <option>web调研</option>
-								  <option>聊天</option>
+									<c:forEach var="item" items="${applicationScope.source}">
+										<option value="${item.value}">${item.text}</option>
+									</c:forEach>
 								</select>
 							</div>
 						</div>
@@ -427,7 +578,7 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 							<div class="form-group">
 								<label for="edit-nextContactTime" class="col-sm-2 control-label">下次联系时间</label>
 								<div class="col-sm-10" style="width: 300px;">
-									<input type="text" class="form-control" id="edit-nextContactTime" value="2017-05-01">
+									<input type="text" class="form-control time" id="edit-nextContactTime" value="2017-05-01">
 								</div>
 							</div>
 						</div>
@@ -447,7 +598,7 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal">更新</button>
+					<button type="button" id="updateBtn">更新</button>
 				</div>
 			</div>
 		</div>
@@ -551,7 +702,7 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 				<table class="table table-hover">
 					<thead>
 						<tr style="color: #B3B3B3;">
-							<td><input type="checkbox" /></td>
+							<td><input type="checkbox" id="qxBtn"/></td>
 							<td>名称</td>
 							<td>公司</td>
 							<td>公司座机</td>
@@ -562,26 +713,7 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 						</tr>
 					</thead>
 					<tbody id="display">
-						<tr>
-							<td><input type="checkbox" /></td>
-							<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='workbench/clue/detail.jsp';">李四先生</a></td>
-							<td>动力节点</td>
-							<td>010-84846003</td>
-							<td>12345678901</td>
-							<td>广告</td>
-							<td>zhangsan</td>
-							<td>已联系</td>
-						</tr>
-                        <tr class="active">
-                            <td><input type="checkbox" /></td>
-                            <td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='workbench/clue/detail.jsp';">李四先生</a></td>
-                            <td>动力节点</td>
-                            <td>010-84846003</td>
-                            <td>12345678901</td>
-                            <td>广告</td>
-                            <td>zhangsan</td>
-                            <td>已联系</td>
-                        </tr>
+
 					</tbody>
 				</table>
 			</div>

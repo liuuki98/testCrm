@@ -51,7 +51,14 @@ public class ClueServiceImp implements ClueService {
 
     @Override
     public Clue getClueById(String id) {
-        Clue clue=clueDao.getClueById(id);
+        ClueDao clueDao2 = SqlSessionUtil.getSqlSession().getMapper(ClueDao.class);
+        Clue clue=clueDao2.getClueById(id);
+        return clue;
+    }
+
+    @Override
+    public Clue getClueById2(String id) {
+        Clue clue=clueDao.getClueById2(id);
         return clue;
     }
 
@@ -257,6 +264,54 @@ public class ClueServiceImp implements ClueService {
             flag=false;
         }
 
+        return flag;
+    }
+
+    @Override
+    public boolean updateClue(Clue clue) {
+        boolean flag=true;
+        int i =clueDao.updateClue(clue);
+        if(i!=1){
+            flag=false;
+        }
+        return flag;
+    }
+
+    @Override
+    public boolean deleteClue(String[] id) {
+        boolean flag=true;
+        int i =clueDao.deleteClue(id);
+        if(i!=1){
+            flag=false;
+        }
+        return flag;
+    }
+
+    @Override
+    public boolean deleteClueById(String id) {
+        boolean flag=true;
+        int i =clueDao.deleteClueById(id);
+        if(i!=1){
+            flag=false;
+        }
+        return flag;
+    }
+
+    @Override
+    public List<ClueRemark> getRemarkList(String id) {
+        ClueRemarkDao clueRemarkDao = SqlSessionUtil.getSqlSession().getMapper(ClueRemarkDao.class);
+        List<ClueRemark> clueRemarkList = clueRemarkDao.getRemarkList(id);
+        return clueRemarkList;
+    }
+
+    @Override
+    public boolean deleteClueRemarkByid(String id) {
+        ClueRemarkDao clueRemarkDao = SqlSessionUtil.getSqlSession().getMapper(ClueRemarkDao.class);
+        boolean flag=true;
+        int i =clueRemarkDao.deleteClueRemarkByid(id);
+        if(i!=1){
+            flag=false;
+        }
         return flag;
     }
 }

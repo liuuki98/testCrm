@@ -13,4 +13,8 @@ public interface TranService {
     int getTotalPages(Map<String, Object> map);
 
     Tran detail(String id);
+
+    boolean changeStage(Tran tran);
+
+    Map<String, Object> getECharts();
 }

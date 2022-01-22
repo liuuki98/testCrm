@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%
 String basePath = request.getScheme() +"://" + request.getServerName() + ":" +request.getServerPort() + request.getContextPath()+"/";
 %>
@@ -9,8 +10,11 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 <meta charset="UTF-8">
 
 <link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+	<link href="jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" />
 <script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
 <script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
+	<script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
 
 <script type="text/javascript">
 
@@ -18,6 +22,20 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 	var cancelAndSaveBtnDefault = true;
 	
 	$(function(){
+
+		//添加日历插件
+		$(".time").datetimepicker({
+			language:  "zh-CN",
+			format: "yyyy-mm-dd",//显示格式
+			minView: 2,//设置只显示到月份
+			initialDate: new Date(),//初始化当前日期
+			weekStart:1,
+			autoclose: true,//选中自动关闭
+			todayBtn: true, //显示今日按钮
+			clearBtn : true,
+			pickerPosition: "top-left"
+		});
+
 		$("#remark").focus(function(){
 			if(cancelAndSaveBtnDefault){
 				//设置remarkDiv的高度为130px
@@ -51,13 +69,22 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 		$(".myHref").mouseout(function(){
 			$(this).children("span").css("color","#E6E6E6");
 		});
+
 		showActivityList();
+		initRemarkList();
+		$("#remarkBody1").on("mouseover",".remarkDiv",function(){
+			$(this).children("div").children("div").show();
+		});
+		$("#remarkBody1").on("mouseout",".remarkDiv",function(){
+			$(this).children("div").children("div").hide();
+		});
+
 		//弹出关联市场活动模态窗口,初始化数据
 		$("#bindWithAcBTn").click(function () {
 
 			$("#bundModal").modal("show");
 		});
-
+		//关联市场模态----搜索市场活动功能
 		$("#serchBtn").click(function () {
 			$.ajax({
 				url:"workbench/clue/searchActivityByClue.do",
@@ -118,7 +145,102 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 				})
 
 			}
-		})
+		});
+		//删除线索并返回到线索模块首页
+		$("#deleteClueBtn").click(function () {
+			if(confirm("确认删除改线索吗？")){
+				$.ajax({
+					url:"workbench/clue/deleteClueById.do",
+					data:{
+						"id":"${requestScope.clue.id}",
+					},
+					type:"post",
+					dataType:"json",
+					success:function (data) {
+						if(data.success){
+							window.location.href="workbench/clue/index.jsp";
+						}else {
+							alert("删除失败!")
+						}
+					}
+				})
+			}
+
+		});
+
+		//打开修改线索的模态窗口
+		$("#editClueBtn").click(function () {
+
+			$.ajax({
+				url:"workbench/clue/editInit.do",
+				data:{
+					"clueId":"${requestScope.clue.id}",
+
+				},
+				type:"get",
+				dataType:"json",
+				success:function (data) {
+					$.each(data.userList,function (index,item) {
+						$("#edit-clueOwner").append("<option value='"+item.id+"'>"+item.name+"</option>");
+					});
+					$("#edit-clueOwner").val("${sessionScope.user.id}");
+					$("#edit-company").val(data.clue.company);
+					$("#edit-call").val(data.clue.appellation);
+					$("#edit-surname").val(data.clue.fullname);
+					$("#edit-job").val(data.clue.job);
+					$("#edit-email").val(data.clue.email);
+					$("#edit-phone").val(data.clue.phone);
+					$("#edit-website").val(data.clue.website);
+					$("#edit-mphone").val(data.clue.mphone);
+					$("#edit-status").val(data.clue.state);
+					$("#edit-source").val(data.clue.source);
+					$("#edit-describe").val(data.clue.description);
+					$("#edit-contactSummary").val(data.clue.contactSummary);
+					$("#edit-nextContactTime").val(data.clue.nextContactTime);
+					$("#edit-address").val(data.clue.address);
+					$("#editClueModal").modal("show");
+				}
+
+			});
+		});
+
+		//保存修改模态
+		$("#updateBtn").click(function () {
+			$.ajax({
+				url:"workbench/clue/updateClue.do",
+				data:{
+					"id":"${requestScope.clue.id}",
+					"owner":$("#edit-clueOwner").val(),
+					"company":$("#edit-company").val(),
+					"appellation":$("#edit-call").val(),
+					"fullname":$("#edit-surname").val(),
+					"job":$("#edit-job").val(),
+					"email":$("#edit-email").val(),
+					"phone":$("#edit-phone").val(),
+					"website":$("#edit-website").val(),
+					"mphone":$("#edit-mphone").val(),
+					"state":$("#edit-status").val(),
+					"source":$("#edit-source").val(),
+					"description":$("#edit-describe").val(),
+					"contactSummary":$("#edit-contactSummary").val(),
+					"nextContactTime":$("#edit-nextContactTime").val(),
+					"address":$("#edit-address").val(),
+
+				},
+				type:"post",
+				dataType:"json",
+				success:function (data) {
+					if(data.success){
+						window.location.href="workbench/clue/detail.do?id="+"${clue.id}";
+
+
+					}else {
+						alert("更新失败！");
+					}
+				}
+
+			});
+		});
 
 
 
@@ -158,7 +280,7 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 	};
 
 
-	//用于删除市场活动
+	//用于删除关联市场活动
 	function deleteActivity(id) {
 		if(confirm("确认删除吗？")){
 			$.ajax({
@@ -178,7 +300,81 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 			})
 		}
 
+	};
+
+	//显示备注列表
+	function initRemarkList() {
+		var id="${clue.id}";
+
+
+		$.ajax({
+			url:"workbench/clue/getRemarkList.do",
+			data:{
+				"id":id,
+			},
+			type:"get",
+			dataType:"json",
+			success:function (data) {
+				var html="";
+				$.each(data,function (index,item) {
+					html+='<div class="remarkDiv" id="'+item.id+'" style="height: 60px;">';
+					html+='<img title="${clue.owner}" src="image/user-thumbnail.png" style="width: 30px; height:30px;"> ';
+					html+='<div style="position: relative; top: -40px; left: 40px;" >';
+					html+='<h5>'+item.noteContent+'</h5>';
+					html+='<font color="gray">市场活动</font> <font color="gray">-</font> <b>${clue.fullname}</b> <small style="color: gray;"> '+(item.editFlag==0?item.createTime:item.editTime)+'由'+(item.editFlag==0?item.createBy:item.editBy)+'</small>';
+					html+='<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">';
+					html+='<a class="myHref" href="javascript:void(0);"><span onclick="editRemark(\''+item.id+'\')" class="glyphicon glyphicon-edit" id="editRemarkBtn" style="font-size: 20px; color:red;"></span></a>';
+					html+='&nbsp;&nbsp;&nbsp;&nbsp;';
+					html+='<a class="myHref" href="javascript:void(0);"><span onclick="deletRemark(\''+item.id+'\')" class="glyphicon glyphicon-remove" id="deleteRemarkBtn" style="font-size: 20px; color:red;"></span></a>';
+					html+='</div>';
+					html+='</div>';
+					html+='</div>';
+				});
+				$("#remarkBody").html(html);
+
+			}
+		});
+	};
+
+	//删除函数操作
+	function deletRemark(id) {
+		if(confirm("确认删除该备注吗？")){
+			$.ajax({
+				url:"workbench/clue/deleteRemarkById.do",
+				data:{
+					"id":id,
+				},
+				type:"post",
+				dataType:"json",
+				success:function (data) {
+					if(data.success){
+						initRemarkList();
+					}else{
+						alert("删除失败！")
+					}
+				}
+			})
+		}
+
 	}
+	//修改备注信息函数
+	function editRemark(id) {
+		$("#hideId").val(id);
+		$.ajax({
+			url:"workbench/activity/getRemarkNoteContent.do",
+			data:{
+				"id":id,
+			},
+			type:"get",
+			dataType:"json",
+			success:function (data) {
+
+				$("#noteContent").html(data.noteContent);
+				$("#editRemarkModal").modal("show");
+			}
+		})
+	}
+
 	
 </script>
 
@@ -260,9 +456,7 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
                             <label for="edit-clueOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
                             <div class="col-sm-10" style="width: 300px;">
                                 <select class="form-control" id="edit-clueOwner">
-                                    <option>zhangsan</option>
-                                    <option>lisi</option>
-                                    <option>wangwu</option>
+
                                 </select>
                             </div>
                             <label for="edit-company" class="col-sm-2 control-label">公司<span style="font-size: 15px; color: red;">*</span></label>
@@ -276,11 +470,9 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
                             <div class="col-sm-10" style="width: 300px;">
                                 <select class="form-control" id="edit-call">
                                     <option></option>
-                                    <option selected>先生</option>
-                                    <option>夫人</option>
-                                    <option>女士</option>
-                                    <option>博士</option>
-                                    <option>教授</option>
+									<c:forEach items="${applicationScope.appellation}" var="item">
+										<option value="${item.value}">${item.text}</option>
+									</c:forEach>
                                 </select>
                             </div>
                             <label for="edit-surname" class="col-sm-2 control-label">姓名<span style="font-size: 15px; color: red;">*</span></label>
@@ -320,13 +512,9 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
                             <div class="col-sm-10" style="width: 300px;">
                                 <select class="form-control" id="edit-status">
                                     <option></option>
-                                    <option>试图联系</option>
-                                    <option>将来联系</option>
-                                    <option selected>已联系</option>
-                                    <option>虚假线索</option>
-                                    <option>丢失线索</option>
-                                    <option>未联系</option>
-                                    <option>需要条件</option>
+									<c:forEach items="${applicationScope.clueState}" var="item">
+										<option value="${item.value}">${item.text}</option>
+									</c:forEach>
                                 </select>
                             </div>
                         </div>
@@ -336,20 +524,9 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
                             <div class="col-sm-10" style="width: 300px;">
                                 <select class="form-control" id="edit-source">
                                     <option></option>
-                                    <option selected>广告</option>
-                                    <option>推销电话</option>
-                                    <option>员工介绍</option>
-                                    <option>外部介绍</option>
-                                    <option>在线商场</option>
-                                    <option>合作伙伴</option>
-                                    <option>公开媒介</option>
-                                    <option>销售邮件</option>
-                                    <option>合作伙伴研讨会</option>
-                                    <option>内部研讨会</option>
-                                    <option>交易会</option>
-                                    <option>web下载</option>
-                                    <option>web调研</option>
-                                    <option>聊天</option>
+									<c:forEach items="${applicationScope.source}" var="item">
+										<option value="${item.value}">${item.text}</option>
+									</c:forEach>
                                 </select>
                             </div>
                         </div>
@@ -373,7 +550,7 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
                             <div class="form-group">
                                 <label for="edit-nextContactTime" class="col-sm-2 control-label">下次联系时间</label>
                                 <div class="col-sm-10" style="width: 300px;">
-                                    <input type="text" class="form-control" id="edit-nextContactTime" value="2017-05-01">
+                                    <input type="text" class="form-control time" id="edit-nextContactTime">
                                 </div>
                             </div>
                         </div>
@@ -393,7 +570,7 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">更新</button>
+                    <button type="button" class="btn btn-primary" id="updateBtn" data-dismiss="modal">更新</button>
                 </div>
             </div>
         </div>
@@ -411,8 +588,8 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 		</div>
 		<div style="position: relative; height: 50px; width: 500px;  top: -72px; left: 700px;">
 			<button type="button" class="btn btn-default" onclick="window.location.href='workbench/clue/convert.jsp?clueId=${clue.id}&name=${clue.fullname}&appellation=${clue.appellation}&company=${clue.company}&owner=${clue.owner}';"><span class="glyphicon glyphicon-retweet"></span> 转换</button>
-			<button type="button" class="btn btn-default" data-toggle="modal" data-target="#editClueModal"><span class="glyphicon glyphicon-edit"></span> 编辑</button>
-			<button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+			<button type="button" class="btn btn-default" id="editClueBtn"><span class="glyphicon glyphicon-edit"></span> 编辑</button>
+			<button type="button" class="btn btn-danger" id="deleteClueBtn"><span class="glyphicon glyphicon-minus"></span> 删除</button>
 		</div>
 	</div>
 	
@@ -503,38 +680,42 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 	</div>
 	
 	<!-- 备注 -->
-	<div style="position: relative; top: 40px; left: 40px;">
+	<div style="position: relative; top: 40px; left: 40px;" id="remarkBody1">
 		<div class="page-header">
 			<h4>备注</h4>
 		</div>
+
+		<div id="remarkBody">
+
+		</div>
 		
 		<!-- 备注1 -->
-		<div class="remarkDiv" style="height: 60px;">
-			<img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">
-			<div style="position: relative; top: -40px; left: 40px;" >
-				<h5>哎呦！</h5>
-				<font color="gray">线索</font> <font color="gray">-</font> <b>李四先生-动力节点</b> <small style="color: gray;"> 2017-01-22 10:10:10 由zhangsan</small>
-				<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
-					<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
-				</div>
-			</div>
-		</div>
-		
-		<!-- 备注2 -->
-		<div class="remarkDiv" style="height: 60px;">
-			<img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">
-			<div style="position: relative; top: -40px; left: 40px;" >
-				<h5>呵呵！</h5>
-				<font color="gray">线索</font> <font color="gray">-</font> <b>李四先生-动力节点</b> <small style="color: gray;"> 2017-01-22 10:20:10 由zhangsan</small>
-				<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
-					<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
-				</div>
-			</div>
-		</div>
+<%--		<div class="remarkDiv" style="height: 60px;">--%>
+<%--			<img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">--%>
+<%--			<div style="position: relative; top: -40px; left: 40px;" >--%>
+<%--				<h5>哎呦！</h5>--%>
+<%--				<font color="gray">线索</font> <font color="gray">-</font> <b>李四先生-动力节点</b> <small style="color: gray;"> 2017-01-22 10:10:10 由zhangsan</small>--%>
+<%--				<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">--%>
+<%--					<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>--%>
+<%--					&nbsp;&nbsp;&nbsp;&nbsp;--%>
+<%--					<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>--%>
+<%--				</div>--%>
+<%--			</div>--%>
+<%--		</div>--%>
+<%--		--%>
+<%--		<!-- 备注2 -->--%>
+<%--		<div class="remarkDiv" style="height: 60px;">--%>
+<%--			<img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">--%>
+<%--			<div style="position: relative; top: -40px; left: 40px;" >--%>
+<%--				<h5>呵呵！</h5>--%>
+<%--				<font color="gray">线索</font> <font color="gray">-</font> <b>李四先生-动力节点</b> <small style="color: gray;"> 2017-01-22 10:20:10 由zhangsan</small>--%>
+<%--				<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">--%>
+<%--					<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>--%>
+<%--					&nbsp;&nbsp;&nbsp;&nbsp;--%>
+<%--					<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>--%>
+<%--				</div>--%>
+<%--			</div>--%>
+<%--		</div>--%>
 		
 		<div id="remarkDiv" style="background-color: #E6E6E6; width: 870px; height: 90px;">
 			<form role="form" style="position: relative;top: 10px; left: 10px;">

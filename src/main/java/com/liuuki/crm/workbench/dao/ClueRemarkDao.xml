@@ -11,4 +11,12 @@
         delete from tbl_clue_remark where clueId=#{clueID}
     </delete>
 
+    <select id="getRemarkList" resultType="com.liuuki.crm.workbench.domain.ClueRemark">
+        select * from tbl_clue_remark where clueId=#{id}
+    </select>
+
+    <delete id="deleteClueRemarkByid">
+        delete from tbl_clue_remark where id=#{id}
+    </delete>
+
 </mapper>

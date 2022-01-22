@@ -9,6 +9,7 @@ import com.liuuki.crm.util.UUIDUtil;
 import com.liuuki.crm.vo.ActivityVo;
 import com.liuuki.crm.workbench.domain.Activity;
 import com.liuuki.crm.workbench.domain.Clue;
+import com.liuuki.crm.workbench.domain.ClueRemark;
 import com.liuuki.crm.workbench.domain.Tran;
 import com.liuuki.crm.workbench.service.ActivityService;
 import com.liuuki.crm.workbench.service.ClueService;
@@ -57,8 +58,108 @@ public class ClueController extends HttpServlet {
             searchActivityByName(request,response);
         }else if("/workbench/clue/convert.do".equals(path)){
             convert(request,response);
+        }else if("/workbench/clue/editInit.do".equals(path)){
+            editInit(request,response);
+        }else if("/workbench/clue/updateClue.do".equals(path)){
+            updateClue(request,response);
+        }else if("/workbench/clue/deleteClue.do".equals(path)){
+            deleteClue(request,response);
+        }else if("/workbench/clue/deleteClueById.do".equals(path)){
+            deleteClueById(request,response);
+        }else if("/workbench/clue/getRemarkList.do".equals(path)){
+            getRemarkList(request,response);
+        }else if("/workbench/clue/deleteRemarkById.do".equals(path)){
+            deleteRemarkById(request,response);
         }
 
+    }
+    private void deleteRemarkById(HttpServletRequest request, HttpServletResponse response) {
+        ClueService clueService = (ClueService)ServiceFactory.getService(new ClueServiceImp());
+        String id=request.getParameter("id");
+        boolean flag=clueService.deleteClueRemarkByid(id);
+        PrintJson.printJsonFlag(response,flag);
+    }
+    private void getRemarkList(HttpServletRequest request, HttpServletResponse response) {
+        ClueService clueService = (ClueService)ServiceFactory.getService(new ClueServiceImp());
+        String id=request.getParameter("id");
+        List<ClueRemark> clueRemarkList = clueService.getRemarkList(id);
+        PrintJson.printJsonObj(response,clueRemarkList);
+
+    }
+
+    private void deleteClueById(HttpServletRequest request, HttpServletResponse response) {
+        ClueService clueService=(ClueService)ServiceFactory.getService(new ClueServiceImp());
+        String id=request.getParameter("id");
+        boolean flag=clueService.deleteClueById(id);
+        PrintJson.printJsonFlag(response,flag);
+
+    }
+
+    private void deleteClue(HttpServletRequest request, HttpServletResponse response) {
+        String id[] =request.getParameterValues("id");
+        ClueService clueService=(ClueService)ServiceFactory.getService(new ClueServiceImp());
+        boolean flag = clueService.deleteClue(id);
+        PrintJson.printJsonFlag(response,flag);
+    }
+
+    private void updateClue(HttpServletRequest request, HttpServletResponse response) {
+     ClueService clueService=(ClueService)ServiceFactory.getService(new ClueServiceImp());
+        String id =request.getParameter("id");
+        String owner = request.getParameter("owner");
+        String fullname =request.getParameter("fullname");
+        String appellation =request.getParameter("appellation");
+        String company =request.getParameter("company");
+        String job =request.getParameter("job");
+        String email =request.getParameter("email");
+        String phone =request.getParameter("phone");
+        String website =request.getParameter("website");
+        String mphone =request.getParameter("mphone");
+        String state =request.getParameter("state");
+        String source =request.getParameter("source");
+        String editBy =((User)request.getSession().getAttribute("user")).getName();
+        String editTime =DateTimeUtil.getSysTime();
+        String description =request.getParameter("description");
+        String contactSummary =request.getParameter("contactSummary");
+        String nextContactTime =request.getParameter("nextContactTime");
+        String address =request.getParameter("address");
+        Clue clue = new Clue();
+        clue.setOwner(owner);
+        clue.setId(id);
+        clue.setFullname(fullname);
+        clue.setAppellation(appellation);
+        clue.setCompany(company);
+        clue.setJob(job);
+        clue.setEmail(email);
+        clue.setPhone(phone);
+        clue.setWebsite(website);
+        clue.setMphone(mphone);
+        clue.setState(state);
+        clue.setSource(source);
+        clue.setEditBy(editBy);
+        clue.setEditTime(editTime);
+        clue.setDescription(description);
+        clue.setContactSummary(contactSummary);
+        clue.setNextContactTime(nextContactTime);
+        clue.setAddress(address);
+
+        boolean flag = clueService.updateClue(clue);
+        System.out.println(flag);
+        PrintJson.printJsonFlag(response,flag);
+
+
+    }
+
+    private void editInit(HttpServletRequest request, HttpServletResponse response) {
+        String id=request.getParameter("clueId");
+        ActivityService activityService = (ActivityService)ServiceFactory.getService(new ActivityServiceImp());
+
+        List<User> userList=activityService.userList();
+        ClueService clueService=(ClueService)ServiceFactory.getService(new ClueServiceImp());
+        Clue clue =clueService.getClueById2(id);
+        Map<String,Object> map=new HashMap<>();
+        map.put("userList",userList);
+        map.put("clue",clue);
+        PrintJson.printJsonObj(response,map);
     }
 
     private void convert(HttpServletRequest request, HttpServletResponse response) {

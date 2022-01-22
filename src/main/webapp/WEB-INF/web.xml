@@ -81,6 +81,12 @@
     <url-pattern>/workbench/clue/bindClueAndAc.do</url-pattern>
     <url-pattern>/workbench/clue/searchActivityByName.do</url-pattern>
     <url-pattern>/workbench/clue/convert.do</url-pattern>
+    <url-pattern>/workbench/clue/editInit.do</url-pattern>
+    <url-pattern>/workbench/clue/updateClue.do</url-pattern>
+    <url-pattern>/workbench/clue/deleteClue.do</url-pattern>
+    <url-pattern>/workbench/clue/deleteClueById.do</url-pattern>
+    <url-pattern>/workbench/clue/getRemarkList.do</url-pattern>
+    <url-pattern>/workbench/clue/deleteRemarkById.do</url-pattern>
   </servlet-mapping>
 
 

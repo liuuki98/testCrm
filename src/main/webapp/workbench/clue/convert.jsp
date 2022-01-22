@@ -76,7 +76,7 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 		$("#cancleBtn").click(function () {
 			window.history.back();
 		});
-		//
+		//进行线索的业务转换
 		$("#convertBtn").click(function () {
 			if($("#isCreateTransaction").prop("checked")){
 				$("#convertForm").submit();

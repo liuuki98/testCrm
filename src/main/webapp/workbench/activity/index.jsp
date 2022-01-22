@@ -108,7 +108,7 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 
 				pageList(1,$("#activityPage").bs_pagination('getOption', 'rowsPerPage'));
 			}
-		})
+		});
 
 		//分页显示功能得实现
 		function pageList(pageNum,pageSize) {
@@ -175,6 +175,7 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 
 
 		//删除操作
+
 		$("#deleteBtn").click(function () {
 
 			var param="";
@@ -210,7 +211,6 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 			}
 
 		});
-
 		//初始化修改动态窗口
 		$("#editBtn").click(function () {
 			let $xz=$("input[name=xzBtn]:checked");

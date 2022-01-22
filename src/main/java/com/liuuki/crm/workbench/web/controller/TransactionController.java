@@ -54,7 +54,48 @@ public class TransactionController extends HttpServlet {
         }else if("/workbench/transaction/detail.do".equals(path)){
             detail(request,response);
 
+        }else if("/workbench/transaction/changeStage.do".equals(path)){
+            changeStage(request,response);
+        }else if("/workbench/transaction/getECharts.do".equals(path)){
+            getECharts(request,response);
         }
+    }
+
+
+
+    private void getECharts(HttpServletRequest request, HttpServletResponse response) {
+        TranService tranService=(TranService)ServiceFactory.getService(new TranServiceImp());
+       Map<String,Object> map= tranService.getECharts();
+       PrintJson.printJsonObj(response,map);
+    }
+
+    private void changeStage(HttpServletRequest request, HttpServletResponse response) {
+        TranService tranService=(TranService)ServiceFactory.getService(new TranServiceImp());
+        String id=request.getParameter("id");
+        String money=request.getParameter("money");
+        String stage = request.getParameter("stage");
+        String expectedDate=request.getParameter("expectedDate");
+        String editBy=((User)request.getSession().getAttribute("user")).getName();
+        String editTime=DateTimeUtil.getSysTime();
+
+
+        Tran tran = new Tran();
+        tran.setId(id);
+        tran.setMoney(money);
+        tran.setStage(stage);
+        tran.setExpectedDate(expectedDate);
+        tran.setEditBy(editBy);
+        tran.setEditTime(editTime);
+        Map<String,String> map =(Map<String, String>) request.getServletContext().getAttribute("map");
+        tran.setPosibility(map.get(stage));
+
+
+        boolean flag = tranService.changeStage(tran);
+        Map<String,Object> map1= new HashMap<>();
+        map1.put("success",flag);
+        map1.put("tran",tran);
+        PrintJson.printJsonObj(response,map1);
+
     }
 
     /**

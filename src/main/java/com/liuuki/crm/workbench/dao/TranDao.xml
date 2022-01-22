@@ -151,4 +151,17 @@
         on t.contactsId=con.id
         where t.id=#{id}
     </select>
+
+    <update id="changeStage">
+        update tbl_tran set stage=#{stage},editBy=#{editBy},editTime=#{editTime}
+        where id=#{id}
+    </update>
+
+    <select id="getTotalStage" resultType="int">
+        select count(*) from tbl_tran
+    </select>
+
+    <select id="getStages" resultType="map">
+        select count(*) as value,stage as name from tbl_tran group by stage
+    </select>
 </mapper>
