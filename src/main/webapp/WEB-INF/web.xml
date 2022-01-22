@@ -87,6 +87,9 @@
     <url-pattern>/workbench/clue/deleteClueById.do</url-pattern>
     <url-pattern>/workbench/clue/getRemarkList.do</url-pattern>
     <url-pattern>/workbench/clue/deleteRemarkById.do</url-pattern>
+    <url-pattern>/workbench/clue/editClueRemark.do</url-pattern>
+    <url-pattern>/workbench/clue/updateRemark.do</url-pattern>
+    <url-pattern>/workbench/clue/saveRemark.do</url-pattern>
   </servlet-mapping>
 
 

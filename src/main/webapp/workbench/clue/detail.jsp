@@ -242,6 +242,53 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 			});
 		});
 
+		//更新线索备注
+		$("#updateRemarkBtn").click(function () {
+			$.ajax({
+				url:"workbench/clue/updateRemark.do",
+				data:{
+					"text":$("#noteContent").val().trim(),
+					"id":$("#hideId").val(),
+				},
+				type:"post",
+				dataType:"json",
+				success:function (data) {
+					if(data.success){
+						initRemarkList();
+						$("#editRemartkModal").modal("hide");
+
+					}else {
+						alert("修改失败!")
+					}
+				}
+			})
+		});
+
+		$("#saveRemark").click(function () {
+
+			$.ajax({
+				url:"workbench/clue/saveRemark.do",
+				data:{
+					"clueId":"${requestScope.clue.id}",
+					"noteContent":$("#remark").val(),
+				},
+				type:"post",
+				dataType:"json",
+				success:function (data) {
+					if(data.success){
+						initRemarkList();
+						//显示
+						$("#cancelAndSaveBtn").hide();
+						//设置remarkDiv的高度为130px
+						$("#remarkDiv").css("height","90px");
+						cancelAndSaveBtnDefault = true;
+						$("#remark").val("");
+					}else {
+						alert("添加备注失败！")
+					}
+				}
+			});
+		});
 
 
 
@@ -361,7 +408,7 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 	function editRemark(id) {
 		$("#hideId").val(id);
 		$.ajax({
-			url:"workbench/activity/getRemarkNoteContent.do",
+			url:"workbench/clue/editClueRemark.do",
 			data:{
 				"id":id,
 			},
@@ -370,16 +417,49 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 			success:function (data) {
 
 				$("#noteContent").html(data.noteContent);
-				$("#editRemarkModal").modal("show");
+				$("#editRemartkModal").modal("show");
 			}
 		})
-	}
+	};
 
 	
 </script>
 
 </head>
 <body>
+<input type="hidden" id="hideId">
+
+<!-- 修改市场活动备注的模态窗口 -->
+<div class="modal fade" id="editRemartkModal" role="dialog">
+	<%-- 备注的id --%>
+	<input type="hidden" id="remarkId">
+	<div class="modal-dialog" role="document" style="width: 40%;">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="true">×</span>
+				</button>
+				<h4 class="modal-title" id="ModalLabel">修改备注</h4>
+			</div>
+
+			<div class="modal-body">
+				<form class="form-horizontal" role="form">
+					<div class="form-group">
+						<label for="edit-describe" class="col-sm-2 control-label">内容</label>
+						<div class="col-sm-10" style="width: 81%;">
+							<textarea class="form-control" rows="3" id="noteContent"></textarea>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal" id="closeRemarkModol">关闭</button>
+				<button type="button" class="btn btn-primary" id="updateRemarkBtn">更新</button>
+			</div>
+		</div>
+	</div>
+</div>
+
 
 	<!-- 关联市场活动的模态窗口 -->
 	<div class="modal fade" id="bundModal" role="dialog">
@@ -722,7 +802,7 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 				<textarea id="remark" class="form-control" style="width: 850px; resize : none;" rows="2"  placeholder="添加备注..."></textarea>
 				<p id="cancelAndSaveBtn" style="position: relative;left: 737px; top: 10px; display: none;">
 					<button id="cancelBtn" type="button" class="btn btn-default">取消</button>
-					<button type="button" class="btn btn-primary">保存</button>
+					<button type="button" class="btn btn-primary" id="saveRemark">保存</button>
 				</p>
 			</form>
 		</div>

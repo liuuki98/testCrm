@@ -316,6 +316,7 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
                     </button>
                     <h4 class="modal-title" id="myModalLabel">修改备注</h4>
                 </div>
+
                 <div class="modal-body">
                     <form class="form-horizontal" role="form">
                         <div class="form-group">

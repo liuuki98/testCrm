@@ -230,7 +230,7 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 							param += "&";
 						}
 					}
-					alert(param);
+
 					$.ajax({
 						url:"workbench/clue/deleteClue.do",
 						data:param,
@@ -239,6 +239,7 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 						success:function (data) {
 
 							if(data.success){
+								$("#qxBtn").prop("checked",false);
 								pageList($("#activityPage").bs_pagination('getOption', 'currentPage')
 										,$("#activityPage").bs_pagination('getOption', 'rowsPerPage'));
 							}else{
@@ -246,10 +247,11 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 							}
 						}
 					})
-				}
-			}
+				};
+			};
 
 		});
+
 
 
 
