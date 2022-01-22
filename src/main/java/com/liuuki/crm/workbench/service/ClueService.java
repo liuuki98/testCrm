@@ -33,4 +33,11 @@ public interface ClueService {
     List<ClueRemark> getRemarkList(String id);
 
     boolean deleteClueRemarkByid(String id);
+
+    ClueRemark getClueRemarkByid(String id);
+
+
+    boolean updateRemark(ClueRemark clueRemark);
+
+    boolean saveRemark(ClueRemark clueRemark);
 }

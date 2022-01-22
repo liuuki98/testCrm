@@ -70,9 +70,57 @@ public class ClueController extends HttpServlet {
             getRemarkList(request,response);
         }else if("/workbench/clue/deleteRemarkById.do".equals(path)){
             deleteRemarkById(request,response);
+        }else if("/workbench/clue/editClueRemark.do".equals(path)){
+            editClueRemark(request,response);
+
+        }else if("/workbench/clue/updateRemark.do".equals(path)){
+            updateRemark(request,response);
+        }else if("/workbench/clue/saveRemark.do".equals(path)){
+            saveRemark(request,response);
         }
 
     }
+
+    private void saveRemark(HttpServletRequest request, HttpServletResponse response) {
+        ClueService clueService = (ClueService)ServiceFactory.getService(new ClueServiceImp());
+        String clueId=request.getParameter("clueId");
+        String noteContent=request.getParameter("noteContent");
+        ClueRemark clueRemark = new ClueRemark();
+        clueRemark.setId(UUIDUtil.getUUID());
+        clueRemark.setClueId(clueId);
+        clueRemark.setNoteContent(noteContent);
+        clueRemark.setEditFlag("0");
+        clueRemark.setCreateBy(((User)request.getSession().getAttribute("user")).getName());
+        clueRemark.setCreateTime(DateTimeUtil.getSysTime());
+        boolean flag =clueService.saveRemark(clueRemark);
+        PrintJson.printJsonFlag(response,flag);
+    }
+
+    private void updateRemark(HttpServletRequest request, HttpServletResponse response) {
+        ClueService clueService = (ClueService)ServiceFactory.getService(new ClueServiceImp());
+        String noteContent =request.getParameter("text");
+        String id=request.getParameter("id");
+        ClueRemark clueRemark = new ClueRemark();
+
+
+        clueRemark.setId(id);
+        clueRemark.setEditFlag("1");
+        clueRemark.setEditTime(DateTimeUtil.getSysTime());
+        clueRemark.setNoteContent(noteContent);
+        clueRemark.setEditBy(((User)request.getSession().getAttribute("user")).getName());
+
+        boolean flag=clueService.updateRemark(clueRemark);
+        PrintJson.printJsonFlag(response,flag);
+
+    }
+
+    private void editClueRemark(HttpServletRequest request, HttpServletResponse response) {
+        ClueService clueService = (ClueService)ServiceFactory.getService(new ClueServiceImp());
+        String id=request.getParameter("id");
+        ClueRemark clueRemark=clueService.getClueRemarkByid(id);
+        PrintJson.printJsonObj(response,clueRemark);
+    }
+
     private void deleteRemarkById(HttpServletRequest request, HttpServletResponse response) {
         ClueService clueService = (ClueService)ServiceFactory.getService(new ClueServiceImp());
         String id=request.getParameter("id");

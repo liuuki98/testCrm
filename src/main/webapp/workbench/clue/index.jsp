@@ -256,7 +256,6 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 
 
 
-
 	});
 
 	function pageList(pageNum,pageSize){

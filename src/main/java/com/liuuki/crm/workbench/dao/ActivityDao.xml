@@ -130,7 +130,7 @@
         where a.name like '%' #{name} '%'
         and a.id not in(
             select activityId from tbl_clue_activity_relation where clueId=#{clueId}
-        )
+        )order by a.createTime desc
     </select>
 
     <select id="searchActivityByName" resultType="com.liuuki.crm.workbench.domain.Activity">

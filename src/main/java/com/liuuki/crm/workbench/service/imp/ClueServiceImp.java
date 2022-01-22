@@ -281,19 +281,49 @@ public class ClueServiceImp implements ClueService {
     public boolean deleteClue(String[] id) {
         boolean flag=true;
         int i =clueDao.deleteClue(id);
-        if(i!=1){
+        if(i!=id.length){
             flag=false;
         }
+        System.out.println(flag);
+        ClueRemarkDao clueRemarkDao = SqlSessionUtil.getSqlSession().getMapper(ClueRemarkDao.class);
+        int remark = clueRemarkDao.getClueRemarkByClueIds(id);
+        int deleteRemark=clueRemarkDao.deleteRemarkByCIds(id);
+
+        if(deleteRemark!=remark){
+            flag=false;
+        }
+        System.out.println(flag);
+        System.out.println(deleteRemark);
+        System.out.println(remark);
+        ClueActivityRelationDao clueActivityRelationDao=SqlSessionUtil.getSqlSession().getMapper(ClueActivityRelationDao.class);
+        int remark3=clueActivityRelationDao.getCarByClueIds(id);
+        int remark2=clueActivityRelationDao.deleteCarByClueIds(id);
+
+        if(remark2!=remark3){
+            flag=false;
+        }
+        System.out.println(flag);
+        System.out.println(remark2);
+        System.out.println(remark3);
         return flag;
     }
 
     @Override
     public boolean deleteClueById(String id) {
+
         boolean flag=true;
         int i =clueDao.deleteClueById(id);
         if(i!=1){
             flag=false;
         }
+        System.out.println(flag);
+        ClueRemarkDao clueRemarkDao = SqlSessionUtil.getSqlSession().getMapper(ClueRemarkDao.class);
+        int i2=clueRemarkDao.deleteClueRemark(id);
+
+        System.out.println(flag);
+        ClueActivityRelationDao clueActivityRelationDao=SqlSessionUtil.getSqlSession().getMapper(ClueActivityRelationDao.class);
+        int i3 = clueActivityRelationDao.deleteCarByClueId(id);
+        System.out.println(flag);
         return flag;
     }
 
@@ -309,6 +339,37 @@ public class ClueServiceImp implements ClueService {
         ClueRemarkDao clueRemarkDao = SqlSessionUtil.getSqlSession().getMapper(ClueRemarkDao.class);
         boolean flag=true;
         int i =clueRemarkDao.deleteClueRemarkByid(id);
+        if(i!=1){
+            flag=false;
+        }
+        return flag;
+    }
+
+    @Override
+    public ClueRemark getClueRemarkByid(String id) {
+        ClueRemarkDao clueRemarkDao = SqlSessionUtil.getSqlSession().getMapper(ClueRemarkDao.class);
+        ClueRemark clueRemark = clueRemarkDao.getClueRemarkByid(id);
+        return clueRemark;
+    }
+
+    @Override
+    public boolean updateRemark(ClueRemark clueRemark) {
+        ClueRemarkDao clueRemarkDao = SqlSessionUtil.getSqlSession().getMapper(ClueRemarkDao.class);
+        boolean flag=true;
+        int i =clueRemarkDao.updateRemark(clueRemark);
+        System.out.println(i);
+        if(i!=1){
+            flag=false;
+        }
+        return flag;
+    }
+
+    @Override
+    public boolean saveRemark(ClueRemark clueRemark) {
+        ClueRemarkDao clueRemarkDao = SqlSessionUtil.getSqlSession().getMapper(ClueRemarkDao.class);
+        boolean flag=true;
+        int i =clueRemarkDao.saveRemark(clueRemark);
+        System.out.println(i);
         if(i!=1){
             flag=false;
         }
