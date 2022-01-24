@@ -31,7 +31,7 @@
   <listener>
     <listener-class>com.liuuki.crm.settings.web.listener.Initlistener</listener-class>
   </listener>
-
+  <!--处理登录和首页活动及相关的业务员-->
   <servlet>
     <servlet-name>UserController</servlet-name>
     <servlet-class>com.liuuki.crm.settings.web.controller.UserController</servlet-class>
@@ -39,6 +39,8 @@
   <servlet-mapping>
     <servlet-name>UserController</servlet-name>
     <url-pattern>/settings/user/login.do</url-pattern>
+    <url-pattern>/settings/user/updatePwd.do</url-pattern>
+    <url-pattern>/settings/user/exit.do</url-pattern>
   </servlet-mapping>
 
   <!--处理市场活动及相关的业务员-->
@@ -92,7 +94,7 @@
     <url-pattern>/workbench/clue/saveRemark.do</url-pattern>
   </servlet-mapping>
 
-
+  <!--处理交易及相关的业务员-->
   <servlet>
     <servlet-name>TransactionController</servlet-name>
     <servlet-class>com.liuuki.crm.workbench.web.controller.TransactionController</servlet-class>
@@ -110,7 +112,20 @@
     <url-pattern>/workbench/transaction/getECharts.do</url-pattern>
 
   </servlet-mapping>
-
+  <!--处理客户及相关的业务员-->
+  <servlet>
+    <servlet-name>ContactsController</servlet-name>
+    <servlet-class>com.liuuki.crm.workbench.web.controller.ContactsController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ContactsController</servlet-name>
+    <url-pattern>/workbench/contacts/getUserList.do</url-pattern>
+    <url-pattern>/workbench/contacts/getCustomerByName.do</url-pattern>
+    <url-pattern>/workbench/contacts/saveCustomer.do</url-pattern>
+    <url-pattern>/workbench/contacts/pageList.do</url-pattern>
+    <url-pattern>/workbench/contacts/deleteContacts.do</url-pattern>
+    <url-pattern>/workbench/contacts/detail.do</url-pattern>
+  </servlet-mapping>
 
 
 

@@ -26,7 +26,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			$("#submit").click(function () {
 				login();
 
-			})
+			});
 
 			$(window).keydown(function (event) {
 				if(event.keyCode==13){
@@ -34,7 +34,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				}
 			})
 
-		})
+		});
 
 		function login() {
 			let username = $("#username").val().trim();

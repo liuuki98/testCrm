@@ -280,7 +280,7 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 	<!-- 大标题 -->
 	<div style="position: relative; left: 40px; top: -30px;">
 		<div class="page-header">
-			<h3>李四先生 <small> - 动力节点</small></h3>
+			<h3>${c.fullname}${c.appellation} <small> - 动力节点</small></h3>
 		</div>
 		<div style="position: relative; height: 50px; width: 500px;  top: -72px; left: 700px;">
 			<button type="button" class="btn btn-default" data-toggle="modal" data-target="#editContactsModal"><span class="glyphicon glyphicon-edit"></span> 编辑</button>

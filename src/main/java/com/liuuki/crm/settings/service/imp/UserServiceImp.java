@@ -5,6 +5,7 @@ import com.liuuki.crm.settings.dao.UserDao;
 import com.liuuki.crm.settings.domain.User;
 import com.liuuki.crm.settings.service.UserService;
 import com.liuuki.crm.util.DateTimeUtil;
+import com.liuuki.crm.util.MD5Util;
 import com.liuuki.crm.util.SqlSessionUtil;
 
 
@@ -53,5 +54,26 @@ public class UserServiceImp implements UserService  {
 
 
         return user;
+    }
+
+    @Override
+    public boolean updatePwd(String currentPwd, String newPwd,String id) {
+        boolean flag=true;
+        String userPwd=userDao.getPwd(id);
+        currentPwd = MD5Util.getMD5(currentPwd);
+        if(userPwd.equals(currentPwd)){
+            newPwd=MD5Util.getMD5(newPwd);
+            Map<String,String> map =new HashMap<>();
+            map.put("id",id);
+            map.put("newPwd",newPwd);
+            int i =userDao.updatePwd(map);
+            if(i!=1){
+                flag=false;
+            }
+            return flag;
+        }else {
+            flag=false;
+            return flag;
+        }
     }
 }

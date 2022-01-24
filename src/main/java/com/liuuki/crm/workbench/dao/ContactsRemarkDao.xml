@@ -25,4 +25,18 @@
         #{contactsId}
         )
     </insert>
+
+    <select id="getConRemarkByClueIds" resultType="int">
+        select count(*) from tbl_contacts_remark where contactsId in
+        <foreach collection="array" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </select>
+
+    <delete id="deleteRemarkByCIds">
+        delete from tbl_contacts_remark where contactsId in
+        <foreach collection="array" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </delete>
 </mapper>

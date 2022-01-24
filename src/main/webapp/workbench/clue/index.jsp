@@ -247,8 +247,10 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 							}
 						}
 					})
-				};
-			};
+				}
+			}
+
+
 
 		});
 

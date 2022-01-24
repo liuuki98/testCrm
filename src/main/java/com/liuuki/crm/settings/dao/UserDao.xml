@@ -6,4 +6,14 @@
     <select id="login" resultType="com.liuuki.crm.settings.domain.User">
         select * from tbl_user where loginAct=#{username} and loginPwd=#{password}
     </select>
+
+    <select id="getPwd" resultType="String">
+        select loginPwd from tbl_user where id=#{id}
+    </select>
+
+    <update id="updatePwd">
+        update tbl_user set
+        loginPwd=#{newPwd}
+        where id=#{id}
+    </update>
 </mapper>

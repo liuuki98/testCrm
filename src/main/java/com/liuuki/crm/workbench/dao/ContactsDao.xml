@@ -45,4 +45,75 @@
     <select id="searchContactsByName" resultType="com.liuuki.crm.workbench.domain.Contacts">
         select id,fullname,email,mphone from tbl_contacts where fullname like '%' #{name} '%'
     </select>
+
+    <select id="selectByCondition" resultType="com.liuuki.crm.workbench.domain.Contacts">
+        select
+        c.id,
+        c.fullname,
+        u.name as owner,
+        cus.name as customerId,
+        c.source,
+        c.birth
+        from tbl_contacts as c
+        join tbl_user as u
+        on c.owner=u.id
+        join tbl_customer as cus
+        on c.customerId=cus.id
+        <where>
+            <if test="fullname!=null and fullname!=''">
+                c.fullname like '%' #{fullname} '%'
+            </if>
+            <if test="owner!=null and owner!=''">
+                and u.name like '%' #{owner} '%'
+            </if>
+            <if test="customerName!=null and customerName!=''">
+                and cus.name like '%' #{customerName} '%'
+            </if>
+            <if test="source!=null and source!=''">
+                and c.source like '%' #{source} '%'
+            </if>
+            <if test="birth!=null and birth!=''">
+                and c.birth like '%' #{birth} '%'
+            </if>
+        </where>
+        order by c.createTime desc
+        limit #{pageStart},#{pageEnd}
+    </select>
+
+    <select id="getTotalPages" resultType="int">
+        select count(*)
+        from tbl_contacts as c
+        join tbl_user as u
+        on c.owner=u.id
+        join tbl_customer as cus
+        on c.customerId=cus.id
+        <where>
+            <if test="fullname!=null and fullname!=''">
+                c.fullname like '%' #{funllname} '%'
+            </if>
+            <if test="owner!=null and owner!=''">
+                and u.name like '%' #{owner} '%'
+            </if>
+            <if test="customerName!=null and customerName!=''">
+                and cus.name like '%' #{customerName} '%'
+            </if>
+            <if test="source!=null and source!=''">
+                and c.source like '%' #{source} '%'
+            </if>
+            <if test="birth!=null and birth!=''">
+                and c.birth like '%' #{birth} '%'
+            </if>
+        </where>
+    </select>
+
+    <delete id="deleteClue">
+        delete from tbl_contacts where id in
+        <foreach collection="array" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="getContactsByid" resultType="com.liuuki.crm.workbench.domain.Contacts">
+        select * from tbl_contacts where id=#{id}
+    </select>
 </mapper>

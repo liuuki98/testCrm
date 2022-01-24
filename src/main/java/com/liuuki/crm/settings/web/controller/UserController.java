@@ -30,11 +30,39 @@ public class UserController extends HttpServlet {
         String path = request.getServletPath();
         if ("/settings/user/login.do".equals(path)) {
             login(request,response);
+        }else if("/settings/user/updatePwd.do".equals(path)){
+            updatePwd(request,response);
+        }else if("/settings/user/exit.do".equals(path)){
+            exit(request,response);
         }
 
 
 
     }
+
+    private void exit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.getSession().removeAttribute("user");
+        request.getRequestDispatcher("/login.jsp").forward(request,response);
+    }
+
+    private void updatePwd(HttpServletRequest request, HttpServletResponse response) {
+        UserService userService=(UserService)ServiceFactory.getService(new UserServiceImp()) ;
+        String currentPwd=request.getParameter("currentPwd");
+        String newPwd=request.getParameter("newPwd");
+        String  id=((User)request.getSession().getAttribute("user")).getId();
+        boolean flag=userService.updatePwd(currentPwd,newPwd,id);
+        if (flag){
+            System.out.println("修改密码成功");
+            request.getSession().removeAttribute("user");
+            PrintJson.printJsonFlag(response,flag);
+        }else {
+            PrintJson.printJsonFlag(response,flag);
+        }
+
+
+
+    }
+
     private void login(HttpServletRequest request,HttpServletResponse response){
         System.out.println("进入到了控制器的login方法");
         String username = request.getParameter("username");

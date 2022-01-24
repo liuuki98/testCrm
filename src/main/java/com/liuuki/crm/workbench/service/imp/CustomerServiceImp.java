@@ -14,10 +14,12 @@ import java.util.List;
  * @Version 1.0
  **/
 public class CustomerServiceImp implements CustomerService {
+
     @Override
     public List<String> getCustomerName(String name) {
         CustomerDao customerDao = SqlSessionUtil.getSqlSession().getMapper(CustomerDao.class);
-       List<String> strings= customerDao.getCustomerName(name);
+        List<String> strings= customerDao.getCustomerName(name);
         return strings;
     }
+
 }

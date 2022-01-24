@@ -6,4 +6,18 @@
     <insert id="saveContactsActivityRelation">
         insert into tbl_contacts_activity_relation(id,contactsId,activityId) values (#{id},#{contactsId},#{activityId})
     </insert>
+
+    <select id="getCarByClueIds" resultType="int">
+        select count(*) from tbl_contacts_activity_relation where contactsId in
+        <foreach collection="array" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </select>
+
+    <delete id="deleteCarByClueIds">
+        delete from tbl_contacts_activity_relation where contactsId in
+        <foreach collection="array" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </delete>
 </mapper>

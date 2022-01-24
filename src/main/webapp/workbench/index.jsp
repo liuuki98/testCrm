@@ -38,6 +38,70 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 		
 		
 		window.open("workbench/main/index.html","workareaFrame");
+		//验证密码的格式是否符合要求
+		var reg = /^[0-9a-zA-Z]{6,15}$/;
+		$("#createPasswordBtn").click(function () {
+			$("#editPwdModal").modal("show");
+		});
+		$("#oldPwd").blur(function () {
+
+			var oldPwd=$("#oldPwd").val().trim();
+			if(!reg.test(oldPwd)){
+
+				$("#msg").html("密码为6-15位的数字或字母，请检查输入！");
+			}else {
+				$("#msg").html("");
+			}
+		});
+		$("#newPwd").blur(function () {
+			var newPwd=$("#newPwd").val().trim();
+			if(!reg.test(newPwd)){
+
+				$("#msg").html("密码为6-15位的数字或字母，请检查输入！");
+			}else {
+				$("#msg").html("");
+			}
+		});
+		$("#confirmPwd").keyup(function () {
+			if($("#confirmPwd").val()!=$("#newPwd").val()){
+				$("#confirmPwd").css("color","red");
+			}else {
+				$("#confirmPwd").css("color","green");
+			}
+		});
+		//更新密码错做
+		$("#updatePasswordBtn").click(function () {
+			$.ajax({
+				url:"settings/user/updatePwd.do",
+				data:{
+					"currentPwd":$("#oldPwd").val().trim(),
+					"newPwd":$("#newPwd").val().trim(),
+				},
+				type:"post",
+				dataType:"json",
+				success:function (data) {
+					if(data.success){
+
+						window.location.href="login.jsp";
+					}else {
+						$("#msg").html("原密码错误！");
+					}
+				}
+			})
+		});
+		//安全退出登录
+		$("#exitBtn").click(function () {
+			$("#exitModal").modal("show");
+		});
+		$("#confirmExitBtn").click(function () {
+
+
+
+
+
+			window.location.href="settings/user/exit.do";
+		});
+
 		
 	});
 	
@@ -58,12 +122,12 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 				</div>
 				<div class="modal-body">
 					<div style="position: relative; left: 40px;">
-						姓名：<b>张三</b><br><br>
-						登录帐号：<b>zhangsan</b><br><br>
-						组织机构：<b>1005，市场部，二级部门</b><br><br>
-						邮箱：<b>zhangsan@bjpowernode.com</b><br><br>
-						失效时间：<b>2017-02-14 10:10:10</b><br><br>
-						允许访问IP：<b>127.0.0.1,192.168.100.2</b>
+						姓名：<b>${user.name}</b><br><br>
+						登录帐号：<b>${user.loginAct}</b><br><br>
+						组织机构：<b>${user.deptno}-市场部</b><br><br>
+						邮箱：<b>${user.email}</b><br><br>
+						失效时间：<b>${user.expireTime}</b><br><br>
+						允许访问IP：<b>${user.allowIps}</b>
 					</div>
 				</div>
 				<div class="modal-footer">
@@ -88,28 +152,37 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 						<div class="form-group">
 							<label for="oldPwd" class="col-sm-2 control-label">原密码</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="oldPwd" style="width: 200%;">
+								<input type="password" class="form-control" id="oldPwd" style="width: 200%;">
 							</div>
 						</div>
 						
 						<div class="form-group">
 							<label for="newPwd" class="col-sm-2 control-label">新密码</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="newPwd" style="width: 200%;">
+								<input type="password" class="form-control" id="newPwd" style="width: 200%;">
 							</div>
 						</div>
 						
 						<div class="form-group">
 							<label for="confirmPwd" class="col-sm-2 control-label">确认密码</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="confirmPwd" style="width: 200%;">
+								<input type="password" class="form-control" id="confirmPwd" style="width: 200%;">
 							</div>
+
 						</div>
+						<div class="form-group">
+							<label for="confirmPwd" class="col-sm-2 control-label"></label>
+							<div class="col-sm-10" style="width: 300px;">
+								<span id="msg" style="color: red"></span>
+							</div>
+
+						</div>
+
 					</form>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="window.location.href='login.jsp';">更新</button>
+					<button type="button" class="btn btn-primary" id="updatePasswordBtn">更新</button>
 				</div>
 			</div>
 		</div>
@@ -130,7 +203,7 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="window.location.href='login.jsp';">确定</button>
+					<button type="button" class="btn btn-primary" id="confirmExitBtn">确定</button>
 				</div>
 			</div>
 		</div>
@@ -149,8 +222,8 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 					<ul class="dropdown-menu">
 						<li><a href="settings/index.html"><span class="glyphicon glyphicon-wrench"></span> 系统设置</a></li>
 						<li><a href="javascript:void(0)" data-toggle="modal" data-target="#myInformation"><span class="glyphicon glyphicon-file"></span> 我的资料</a></li>
-						<li><a href="javascript:void(0)" data-toggle="modal" data-target="#editPwdModal"><span class="glyphicon glyphicon-edit"></span> 修改密码</a></li>
-						<li><a href="javascript:void(0);" data-toggle="modal" data-target="#exitModal"><span class="glyphicon glyphicon-off"></span> 退出</a></li>
+						<li><a href="javascript:void(0)" id="createPasswordBtn"><span class="glyphicon glyphicon-edit"></span> 修改密码</a></li>
+						<li><a href="javascript:void(0);" id="exitBtn"><span class="glyphicon glyphicon-off"></span> 退出</a></li>
 					</ul>
 				</li>
 			</ul>

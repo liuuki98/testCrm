@@ -6,4 +6,8 @@ import java.util.Map;
 
 public interface UserDao {
     public User login(Map<String,String> map);
+
+    String getPwd(String id);
+
+    int updatePwd(Map<String, String> newPwd);
 }
