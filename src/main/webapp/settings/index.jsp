@@ -33,14 +33,14 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 			<div style="position: relative; width: 33%; height: 50%;">
 				安全控制
 				<br><br>
-				<!-- 
+				<!--
 				<a href="org/index.jsp" style="text-decoration: none; color: red;">组织机构</a>
 				 -->
 				<a href="settings/dept/index.jsp">部门管理</a>
 				<br>
 				<a href="settings/qx/index.jsp">权限管理</a>
 			</div>
-			
+
 			<div style="position: relative; width: 33%; height: 50%; left: 33%; top: -100%">
 				定制
 				<br><br>
@@ -63,7 +63,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				<br>
 				<a href="javascript:void(0);">服务支持升级规则</a>
 			</div>
-			
+
 			<div style="position: relative; width: 34%; height: 50%;  left: 66%; top: -200%">
 				扩展及API
 				<br><br>
