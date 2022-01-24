@@ -48,8 +48,10 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 
 	//默认情况下取消和保存按钮是隐藏的
 	var cancelAndSaveBtnDefault = true;
+
 	
 	$(function(){
+		levelConfirm("${applicationScope.user.level}");
 		$("#remark").focus(function(){
 			if(cancelAndSaveBtnDefault){
 				//设置remarkDiv的高度为130px
@@ -132,6 +134,12 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 			}
 		})
 	};
+
+	function levelConfirm(level) {
+		if(level<3){
+			window.location.href="workbench/transaction/index.jsp";
+		}
+	}
 	
 	function changeStageLogo(currentStage,index) {
 		pointIndex="<%=point%>";
@@ -208,8 +216,8 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 			<h3>${tran.customerId}-${tran.name} <small>${tran.money}</small></h3>
 		</div>
 		<div style="position: relative; height: 50px; width: 250px;  top: -72px; left: 700px;">
-			<button type="button" class="btn btn-default" onclick="window.location.href='edit.jsp';"><span class="glyphicon glyphicon-edit"></span> 编辑</button>
-			<button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+			<button id="edit-Btn" type="button" class="btn btn-default" onclick="window.location.href='edit.jsp';"><span class="glyphicon glyphicon-edit"></span> 编辑</button>
+			<button id="delete-Btn" type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
 		</div>
 	</div>
 

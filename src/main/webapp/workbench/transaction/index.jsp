@@ -24,6 +24,7 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 
 	$(function(){
 		pageList(1,2);
+		levelConfirm("${applicationScope.user.level}");
 		
 		
 	});
@@ -49,7 +50,7 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 				$.each(data.datalist,function (index,item) {
 					html += '<tr>';
 					html +=	'<td><input type="checkbox" name="xzBtn" value="'+item.id+'"/></td>';
-					html += '<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href=\'workbench/transaction/detail.do?id='+item.id+'\';">'+item.name+'</a></td>';
+					html += '<td><a name="detail" style="text-decoration: none; cursor: pointer;" onclick="window.location.href=\'workbench/transaction/detail.do?id='+item.id+'\';">'+item.name+'</a></td>';
 					html += '<td>'+item.customerId+'</td>';
 					html += '<td>'+item.stage+'</td>';
 					html += '<td>'+item.type+'</td>';
@@ -85,6 +86,18 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 			}
 		})
 	};
+
+	function levelConfirm(level) {
+		if(level<3){
+			$("#create-Btn").prop("disabled",true);
+			$("#edit-Btn").attr("disabled",true);
+			$("#delete-Btn").prop("disabled",true);
+
+			$("#display").on("click",$("a[name=detail]"),function () {
+				$(this).off("click");
+			});
+		}
+	}
 	
 </script>
 </head>
@@ -179,9 +192,9 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 			</div>
 			<div class="btn-toolbar" role="toolbar" style="background-color: #F7F7F7; height: 50px; position: relative;top: 10px;">
 				<div class="btn-group" style="position: relative; top: 18%;">
-				  <button type="button" class="btn btn-primary" onclick="window.location.href='workbench/transaction/create.do';"><span class="glyphicon glyphicon-plus"></span> 创建</button>
-				  <button type="button" class="btn btn-default" onclick="window.location.href='workbench/transaction/edit.jsp';"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
-				  <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+				  <button id="create-Btn" type="button" class="btn btn-primary" onclick="window.location.href='workbench/transaction/create.do';"><span class="glyphicon glyphicon-plus"></span> 创建</button>
+				  <button id="edit-Btn" type="button" class="btn btn-default" onclick="window.location.href='workbench/transaction/edit.jsp';"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
+				  <button id="delete-Btn" type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
 				</div>
 				
 				
@@ -190,7 +203,7 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 				<table class="table table-hover">
 					<thead>
 						<tr style="color: #B3B3B3;">
-							<td><input type="checkbox" /></td>
+							<td><input type="checkbox" id="qxBtn" /></td>
 							<td>名称</td>
 							<td>客户名称</td>
 							<td>阶段</td>
@@ -201,26 +214,7 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 						</tr>
 					</thead>
 					<tbody id="display">
-						<tr>
-							<td><input type="checkbox" /></td>
-							<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='workbench/transaction/detail.jsp';">动力节点-交易01</a></td>
-							<td>动力节点</td>
-							<td>谈判/复审</td>
-							<td>新业务</td>
-							<td>zhangsan</td>
-							<td>广告</td>
-							<td>李四</td>
-						</tr>
-                        <tr class="active">
-                            <td><input type="checkbox" /></td>
-                            <td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='workbench/transaction/detail.jsp';">动力节点-交易01</a></td>
-                            <td>动力节点</td>
-                            <td>谈判/复审</td>
-                            <td>新业务</td>
-                            <td>zhangsan</td>
-                            <td>广告</td>
-                            <td>李四</td>
-                        </tr>
+
 					</tbody>
 				</table>
 			</div>
