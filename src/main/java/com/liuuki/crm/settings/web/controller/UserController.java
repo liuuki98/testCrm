@@ -42,7 +42,8 @@ public class UserController extends HttpServlet {
 
     private void exit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.getSession().removeAttribute("user");
-        request.getRequestDispatcher("/login.jsp").forward(request,response);
+        response.sendRedirect("/login.jsp");
+
     }
 
     private void updatePwd(HttpServletRequest request, HttpServletResponse response) {

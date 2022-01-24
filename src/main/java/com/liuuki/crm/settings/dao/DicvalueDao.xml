@@ -6,4 +6,46 @@
     <select id="getvalues" resultType="com.liuuki.crm.settings.domain.DicValue">
         select * from tbl_dic_value where typeCode=#{code} order by orderNo
     </select>
+
+    <select id="getTotalPages" resultType="int">
+        select count(*) from tbl_dic_value
+    </select>
+
+    <select id="getTypesByPage" resultType="com.liuuki.crm.settings.domain.DicValue">
+        select * from tbl_dic_value order by orderNo limit #{pageStart},#{pageEnd}
+    </select>
+
+    <select id="getTypeCOde" resultType="String">
+        select code from tbl_dic_type group by code
+    </select>
+
+    <insert id="saveDicValue">
+        insert into tbl_dic_value(id,value,text,orderNo,typeCode) values (#{id},#{value},#{text},#{orderNo},#{typeCode})
+    </insert>
+
+    <select id="deleteDicTypeNumber" resultType="int">
+        select count(*) from tbl_dic_value where id in
+        <foreach collection="array" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </select>
+
+    <delete id="deleteDicValues">
+        delete from tbl_dic_value where id in
+        <foreach collection="array" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="Valueedit" resultType="com.liuuki.crm.settings.domain.DicValue">
+        select * from tbl_dic_value where id=#{id}
+    </select>
+
+    <update id="updateValue">
+        update tbl_dic_value set
+        value=#{value},
+        text=#{text},
+        orderNo=#{orderNo}
+        where id=#{id}
+    </update>
 </mapper>

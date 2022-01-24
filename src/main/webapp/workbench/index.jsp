@@ -37,7 +37,7 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 		});
 		
 		
-		window.open("workbench/main/index.html","workareaFrame");
+		window.open("workbench/main/index.jsp","workareaFrame");
 		//验证密码的格式是否符合要求
 		var reg = /^[0-9a-zA-Z]{6,15}$/;
 		$("#createPasswordBtn").click(function () {
@@ -220,7 +220,7 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					</a>
 					<ul class="dropdown-menu">
-						<li><a href="settings/index.html"><span class="glyphicon glyphicon-wrench"></span> 系统设置</a></li>
+						<li><a href="settings/index.jsp"><span class="glyphicon glyphicon-wrench"></span> 系统设置</a></li>
 						<li><a href="javascript:void(0)" data-toggle="modal" data-target="#myInformation"><span class="glyphicon glyphicon-file"></span> 我的资料</a></li>
 						<li><a href="javascript:void(0)" id="createPasswordBtn"><span class="glyphicon glyphicon-edit"></span> 修改密码</a></li>
 						<li><a href="javascript:void(0);" id="exitBtn"><span class="glyphicon glyphicon-off"></span> 退出</a></li>
@@ -237,7 +237,7 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 		<div id="navigation" style="left: 0px; width: 18%; position: relative; height: 100%; overflow:auto;">
 		
 			<ul id="no1" class="nav nav-pills nav-stacked">
-				<li class="liClass"><a href="workbench/main/index.html" target="workareaFrame"><span class="glyphicon glyphicon-home"></span> 工作台</a></li>
+				<li class="liClass"><a href="workbench/main/index.jsp" target="workareaFrame"><span class="glyphicon glyphicon-home"></span> 工作台</a></li>
 				<li class="liClass"><a href="javascript:void(0);" target="workareaFrame"><span class="glyphicon glyphicon-tag"></span> 动态</a></li>
 				<li class="liClass"><a href="javascript:void(0);" target="workareaFrame"><span class="glyphicon glyphicon-time"></span> 审批</a></li>
 				<li class="liClass"><a href="javascript:void(0);" target="workareaFrame"><span class="glyphicon glyphicon-user"></span> 客户公海</a></li>

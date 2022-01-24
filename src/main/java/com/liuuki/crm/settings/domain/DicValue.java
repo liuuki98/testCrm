@@ -53,4 +53,15 @@ public class DicValue {
     public void setTypeCode(String typeCode) {
         this.typeCode = typeCode;
     }
+
+    @Override
+    public String toString() {
+        return "DicValue{" +
+                "id='" + id + '\'' +
+                ", value='" + value + '\'' +
+                ", text='" + text + '\'' +
+                ", orderNo='" + orderNo + '\'' +
+                ", typeCode='" + typeCode + '\'' +
+                '}';
+    }
 }

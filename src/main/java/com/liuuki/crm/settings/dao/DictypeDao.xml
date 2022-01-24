@@ -7,4 +7,42 @@
         select * from tbl_dic_type
     </select>
 
+    <select id="getTotalPages" resultType="int">
+        select count(*) from tbl_dic_type
+    </select>
+
+    <select id="getTypesByPage" resultType="com.liuuki.crm.settings.domain.Dictype">
+        select * from tbl_dic_type order by code limit #{pageStart},#{pageEnd}
+    </select>
+
+    <insert id="saveDicType">
+        insert into tbl_dic_type(code,name,description) values (#{code},#{name},#{description})
+    </insert>
+
+    <select id="deleteDicTypeNumber" resultType="int">
+        select count(*) from tbl_dic_type where code in
+        <foreach collection="array" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </select>
+
+    <delete id="deleteDicTypes">
+        delete from tbl_dic_type where code in
+        <foreach collection="array" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="getTypeByCode" resultType="com.liuuki.crm.settings.domain.Dictype">
+        select * from tbl_dic_type where code=#{code}
+    </select>
+
+    <update id="updateType">
+        update tbl_dic_type set
+        code=#{code},
+        name=#{name},
+        description=#{description}
+        where code=#{code}
+    </update>
+
 </mapper>

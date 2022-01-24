@@ -42,6 +42,25 @@
     <url-pattern>/settings/user/updatePwd.do</url-pattern>
     <url-pattern>/settings/user/exit.do</url-pattern>
   </servlet-mapping>
+  <!--处理设置相关的业务-->
+  <servlet>
+    <servlet-name>DicController</servlet-name>
+    <servlet-class>com.liuuki.crm.settings.web.controller.DicController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DicController</servlet-name>
+    <url-pattern>/settings/dic/getDicType.do</url-pattern>
+    <url-pattern>/settings/dic/saveDicType.do</url-pattern>
+    <url-pattern>/settings/dic/deleteDicType.do</url-pattern>
+    <url-pattern>/settings/dictionary/type/edit.do</url-pattern>
+    <url-pattern>/settings/dic/updateType.do</url-pattern>
+    <url-pattern>/settings/dic/getDicValue.do</url-pattern>
+    <url-pattern>/settings/dictionary/value/enterSave.do</url-pattern>
+    <url-pattern>/settings/dic/saveDicValue.do</url-pattern>
+    <url-pattern>/settings/dic/deleteDicValue.do</url-pattern>
+    <url-pattern>/settings/dictionary/type/Valueedit.do</url-pattern>
+    <url-pattern>/settings/dic/updateValue.do</url-pattern>
+  </servlet-mapping>
 
   <!--处理市场活动及相关的业务员-->
   <servlet>
