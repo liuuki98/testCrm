@@ -9,10 +9,78 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 <head>
 	<base href="<%=basePath %>"/>
 	<meta charset="UTF-8">
-<link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+	<link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+	<link rel="stylesheet" type="text/css" href="jquery/bs_pagination/jquery.bs_pagination.min.css">
 
-<script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
-<script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
+	<script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="jquery/bs_pagination/jquery.bs_pagination.min.js"></script>
+	<script type="text/javascript" src="jquery/bs_pagination/en.js"></script>
+
+	<script>
+		$(function () {
+			pageList(1,2);
+		});
+
+		function pageList(pageNum,pageSize){
+
+			$.ajax({
+				url:"settings/qx/getUserPages.do",
+				data:{
+					"pageNum":pageNum,
+					"pageSize":pageSize,
+				},
+				type:"get",
+				dataType:"json",
+				success:function (data) {
+					var html="";
+					$.each(data.datalist,function (index,item) {
+						html += '<tr>';
+						html +=	'<td><input type="checkbox" name="xzBtn" value="'+item.id+'"/></td>';
+						html += '<td><a style="text-decoration: none; cursor: pointer;" >'+(index+1)+'</a></td>';
+						html += '<td>'+item.loginAct+'</td>';
+						html += '<td>'+item.name+'</td>';
+						html += '<td>'+item.deptNo+'</td>';
+						html += '<td>'+item.email+'</td>';
+						html += '<td>'+item.expireTime+'</td>';
+						html += '<td>'+item.allowIps+'</td>';
+						html += '<td>'+item.lockState+'</td>';
+						html += '<td>'+item.createBy+'</td>';
+						html += '<td>'+item.createTime+'</td>';
+						html += '<td>'+item.editBy+'</td>';
+						html += '<td>'+item.editTime+'</td>';
+						html += '</tr>';
+
+					});
+
+					var totalPages=data.pagesTotal%pageSize==0?data.pagesTotal/pageSize:parseInt(data.pagesTotal/pageSize)+1;
+					$("#display").html(html);
+					//分页插件
+					$("#pageList").bs_pagination({
+						currentPage: pageNum, // 页码
+						rowsPerPage: pageSize, // 每页显示的记录条数
+						maxRowsPerPage: 10, // 每页最多显示的记录条数
+						totalPages: totalPages, // 总页数
+						totalRows: data.pagesTotal, // 总记录条数
+
+						visiblePageLinks: 3, // 显示几个卡片
+
+						showGoToPage: true,
+						showRowsPerPage: true,
+						showRowsInfo: true,
+						showRowsDefaultInfo: true,
+
+						onChangePage : function(event, data){
+							pageList(data.currentPage , data.rowsPerPage);
+						}
+					});
+				}
+			})
+		};
+
+	</script>
+
+
 </head>
 <body>
 
@@ -165,7 +233,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 		<table class="table table-hover">
 			<thead>
 				<tr style="color: #B3B3B3;">
-					<td><input type="checkbox" /></td>
+					<td><input type="checkbox" id="qxBtn"/></td>
 					<td>序号</td>
 					<td>登录帐号</td>
 					<td>用户姓名</td>
@@ -180,7 +248,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 					<td>修改时间</td>
 				</tr>
 			</thead>
-			<tbody>
+			<tbody id="display">
 				<tr class="active">
 					<td><input type="checkbox" /></td>
 					<td>1</td>
@@ -216,38 +284,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 	</div>
 	
 	<div style="height: 50px; position: relative;top: 30px; left: 30px;">
-		<div>
-			<button type="button" class="btn btn-default" style="cursor: default;">共<b>50</b>条记录</button>
-		</div>
-		<div class="btn-group" style="position: relative;top: -34px; left: 110px;">
-			<button type="button" class="btn btn-default" style="cursor: default;">显示</button>
-			<div class="btn-group">
-				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-					10
-					<span class="caret"></span>
-				</button>
-				<ul class="dropdown-menu" role="menu">
-					<li><a href="#">20</a></li>
-					<li><a href="#">30</a></li>
-				</ul>
-			</div>
-			<button type="button" class="btn btn-default" style="cursor: default;">条/页</button>
-		</div>
-		<div style="position: relative;top: -88px; left: 285px;">
-			<nav>
-				<ul class="pagination">
-					<li class="disabled"><a href="#">首页</a></li>
-					<li class="disabled"><a href="#">上一页</a></li>
-					<li class="active"><a href="#">1</a></li>
-					<li><a href="#">2</a></li>
-					<li><a href="#">3</a></li>
-					<li><a href="#">4</a></li>
-					<li><a href="#">5</a></li>
-					<li><a href="#">下一页</a></li>
-					<li class="disabled"><a href="#">末页</a></li>
-				</ul>
-			</nav>
-		</div>
+		<div id="pageList"></div>
 	</div>
 			
 </body>

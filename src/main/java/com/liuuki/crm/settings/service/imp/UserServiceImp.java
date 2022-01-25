@@ -1,15 +1,19 @@
 package com.liuuki.crm.settings.service.imp;
 
 import com.liuuki.crm.Exception.LoginException;
+import com.liuuki.crm.settings.dao.DicvalueDao;
 import com.liuuki.crm.settings.dao.UserDao;
+import com.liuuki.crm.settings.domain.DicValue;
 import com.liuuki.crm.settings.domain.User;
 import com.liuuki.crm.settings.service.UserService;
 import com.liuuki.crm.util.DateTimeUtil;
 import com.liuuki.crm.util.MD5Util;
 import com.liuuki.crm.util.SqlSessionUtil;
+import com.liuuki.crm.vo.ActivityVo;
 
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -75,5 +79,19 @@ public class UserServiceImp implements UserService  {
             flag=false;
             return flag;
         }
+    }
+
+    @Override
+    public ActivityVo<User> getUserPages(Map<String, Object> map) {
+        System.out.println("进入到getUserPages方法");
+
+        int totalPage=userDao.getTotalPages();
+        System.out.println(totalPage);
+        List<User> userList =userDao.getUsersByPage(map);
+        System.out.println(userList.size());
+        ActivityVo<User> userActivityVo=new ActivityVo<>();
+        userActivityVo.setPagesTotal(totalPage);
+        userActivityVo.setDatalist(userList);
+        return userActivityVo;
     }
 }

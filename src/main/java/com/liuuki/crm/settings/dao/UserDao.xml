@@ -16,4 +16,12 @@
         loginPwd=#{newPwd}
         where id=#{id}
     </update>
+
+    <select id="getTotalPages" resultType="int">
+        select count(*) from tbl_user
+    </select>
+
+    <select id="getUsersByPage" resultType="com.liuuki.crm.settings.domain.User">
+        select * from tbl_user order by createTime limit #{pageStart},#{pageEnd}
+    </select>
 </mapper>

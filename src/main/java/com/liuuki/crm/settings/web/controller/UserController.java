@@ -1,11 +1,15 @@
 package com.liuuki.crm.settings.web.controller;
 
+import com.liuuki.crm.settings.domain.DicValue;
 import com.liuuki.crm.settings.domain.User;
+import com.liuuki.crm.settings.service.DicService;
 import com.liuuki.crm.settings.service.UserService;
+import com.liuuki.crm.settings.service.imp.DicServiceImp;
 import com.liuuki.crm.settings.service.imp.UserServiceImp;
 import com.liuuki.crm.util.MD5Util;
 import com.liuuki.crm.util.PrintJson;
 import com.liuuki.crm.util.ServiceFactory;
+import com.liuuki.crm.vo.ActivityVo;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -34,10 +38,28 @@ public class UserController extends HttpServlet {
             updatePwd(request,response);
         }else if("/settings/user/exit.do".equals(path)){
             exit(request,response);
+        }else if("/settings/qx/getUserPages.do".equals(path)){
+            getUserPages(request,response);
         }
 
 
 
+    }
+
+    private void getUserPages(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("进入到getUserPages的控制器方法");
+        UserService userService=(UserService)ServiceFactory.getService(new UserServiceImp()) ;
+        String pageSize=request.getParameter("pageSize");
+        String pageNum=request.getParameter("pageNum");
+
+        int pageStart=(Integer.parseInt(pageNum)-1)*(Integer.parseInt(pageSize));
+        int pageEnd=Integer.parseInt(pageSize);
+        Map<String,Object> map = new HashMap<>();
+        map.put("pageStart",pageStart);
+        map.put("pageEnd",pageEnd);
+
+        ActivityVo<User> userActivityVo=userService.getUserPages(map);
+        PrintJson.printJsonObj(response,userActivityVo);
     }
 
     private void exit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

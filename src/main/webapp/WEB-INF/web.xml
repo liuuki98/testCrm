@@ -41,6 +41,7 @@
     <url-pattern>/settings/user/login.do</url-pattern>
     <url-pattern>/settings/user/updatePwd.do</url-pattern>
     <url-pattern>/settings/user/exit.do</url-pattern>
+    <url-pattern>/settings/qx/getUserPages.do</url-pattern>
   </servlet-mapping>
   <!--处理设置相关的业务-->
   <servlet>
@@ -60,6 +61,7 @@
     <url-pattern>/settings/dic/deleteDicValue.do</url-pattern>
     <url-pattern>/settings/dictionary/type/Valueedit.do</url-pattern>
     <url-pattern>/settings/dic/updateValue.do</url-pattern>
+
   </servlet-mapping>
 
   <!--处理市场活动及相关的业务员-->
