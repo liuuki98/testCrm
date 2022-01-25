@@ -1,11 +1,18 @@
-<!DOCTYPE html>
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
+
+%>
 <html>
 <head>
-<meta charset="UTF-8">
-<link href="../../../jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+	<base href="<%=basePath %>"/>
+	<meta charset="UTF-8">
+<link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
 
-<script type="text/javascript" src="../../../jquery/jquery-1.11.1-min.js"></script>
-<script type="text/javascript" src="../../../jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
+<script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
 </head>
 <body>
 
@@ -177,7 +184,7 @@
 				<tr class="active">
 					<td><input type="checkbox" /></td>
 					<td>1</td>
-					<td><a  href="detail.html">zhangsan</a></td>
+					<td><a  href="detail.jsp">zhangsan</a></td>
 					<td>张三</td>
 					<td>市场部</td>
 					<td>zhangsan@bjpowernode.com</td>
@@ -192,7 +199,7 @@
 				<tr>
 					<td><input type="checkbox" /></td>
 					<td>2</td>
-					<td><a  href="detail.html">lisi</a></td>
+					<td><a  href="detail.jsp">lisi</a></td>
 					<td>李四</td>
 					<td>市场部</td>
 					<td>lisi@bjpowernode.com</td>

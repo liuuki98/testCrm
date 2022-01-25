@@ -21,6 +21,15 @@ public class User {
     private String createBy;    //创建人
     private String editTime;    //修改时间
     private String editBy;  //修改人
+    private String level;
+
+    public String getLevel() {
+        return level;
+    }
+
+    public void setLevel(String level) {
+        this.level = level;
+    }
 
     public User(){}
 

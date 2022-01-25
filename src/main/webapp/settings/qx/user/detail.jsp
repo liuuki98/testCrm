@@ -1,13 +1,20 @@
-<!DOCTYPE html>
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
+
+%>
 <html>
 <head>
-<meta charset="UTF-8">
-<link href="../../../jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
-<link href="../../../jquery/zTree_v3-master/css/zTreeStyle/zTreeStyle.css" type="text/css" rel="stylesheet" />
+	<base href="<%=basePath %>"/>
+	<meta charset="UTF-8">
+<link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+<link href="jquery/zTree_v3-master/css/zTreeStyle/zTreeStyle.css" type="text/css" rel="stylesheet" />
 
-<script type="text/javascript" src="../../../jquery/jquery-1.11.1-min.js"></script>
-<script type="text/javascript" src="../../../jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="../../../jquery/zTree_v3-master/js/jquery.ztree.all.min.js"></script>
+<script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
+<script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="jquery/zTree_v3-master/js/jquery.ztree.all.min.js"></script>
 
 <SCRIPT type="text/javascript">
 	var setting = {
@@ -21,7 +28,15 @@
 	
 	$(document).ready(function(){
 		$.fn.zTree.init($("#treeDemo"), setting, zNodes);
+		levelConfirm("${sessionScope.user.level}");
+
 	});
+	function levelConfirm(level){
+		if(level<4){
+			alert("您的权限为"+level+";"+"无权访问！");
+			window.location.href="workbench/index.jsp";
+		}
+	}
 	
 </SCRIPT>
 

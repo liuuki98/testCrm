@@ -42,7 +42,7 @@ public class UserController extends HttpServlet {
 
     private void exit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.getSession().removeAttribute("user");
-        response.sendRedirect("/login.jsp");
+        response.sendRedirect("/crm/login.jsp");
 
     }
 
@@ -81,7 +81,7 @@ public class UserController extends HttpServlet {
             User user = us.login(username, password, ip);
             request.getSession().setAttribute("user", user);
             PrintJson.printJsonFlag(response, true);
-            System.out.println("已发送到login");
+            System.out.println("已发送到login"+user.getLevel());
 
         }catch (Exception e){
             e.printStackTrace();

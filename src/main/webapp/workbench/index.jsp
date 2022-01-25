@@ -95,10 +95,6 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 		});
 		$("#confirmExitBtn").click(function () {
 
-
-
-
-
 			window.location.href="settings/user/exit.do";
 		});
 

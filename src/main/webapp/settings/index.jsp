@@ -12,6 +12,19 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 <link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
 <script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
 <script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
+	<script>
+		$(function () {
+			levelConfirm("${sessionScope.user.level}");
+
+		});
+
+		function levelConfirm(level){
+			if(level<4){
+				alert("您的权限为"+level+";"+"无权访问！");
+				window.location.href="workbench/index.jsp";
+			}
+		}
+	</script>
 </head>
 <body>
 	<jsp:include page="/settings/top.jsp"></jsp:include>

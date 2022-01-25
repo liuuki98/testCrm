@@ -24,9 +24,9 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 
 	$(function(){
 		pageList(1,2);
-		levelConfirm("${applicationScope.user.level}");
-		
-		
+		levelConfirm("${sessionScope.user.level}");
+
+
 	});
 
 	function pageList(pageNum,pageSize){
@@ -88,6 +88,7 @@ String basePath = request.getScheme() +"://" + request.getServerName() + ":" +re
 	};
 
 	function levelConfirm(level) {
+
 		if(level<3){
 			$("#create-Btn").prop("disabled",true);
 			$("#edit-Btn").attr("disabled",true);
